@@ -55,6 +55,9 @@ def load_from_csv(filename, row_count):
 
             words = row[0].split()
 
+            if len(words) == 0:
+                continue
+
             try:
                 count = int(row[1])
             except ValueError:
@@ -67,7 +70,7 @@ def load_from_csv(filename, row_count):
     
     if not whole_file_read:
         print(f"WARNING: only using top {depth} keywords")
-        
+
     print(f"Read {i} lines from {filename}")
     
     if errors:
