@@ -16,7 +16,7 @@ print(r"""
 
 
 depth = 10000
-show_matches_count = 30
+display_count = 30
 
 
 import csv
@@ -85,10 +85,17 @@ def count_words():
         total_hits += count
 
 def sort_words():
-    global sorted_words
+    global sorted_words, display_words
     sorted_words = sorted(
         word_counts.items(), key=lambda x:x[1], reverse=True
     )
+
+    display_words = []
+    for word in sorted_words:
+        if word[0] not in keywords:
+            display_words.append(word)
+        if len(display_words) >= display_count:
+            break
 
         
 
@@ -167,6 +174,7 @@ def sort_words():
 
 
 
+
 def help_message():
     print("Normal usage:")
     # print(" Type a word to add it to the filter")
@@ -181,11 +189,11 @@ def help_message():
     print(" [ to clear working keywords")
 
 def show_matches():
-    count = min(show_matches_count, len(sorted_words))
+    count = min(display_count, len(display_words))
 
     rows = []
     for i in range(count):
-        word, f = sorted_words[i]
+        word, f = display_words[i]
         rows.append((str(i+1), word, str(f)))
     
     widths = [0, 0, 0]
@@ -260,10 +268,10 @@ while True:
 
     elif ans.isdigit():
         index = int(ans)
-        if index < 1 or index > len(sorted_words):
-            print(f"Index must be within 1 to {sorted_words}")
+        if index < 1 or index > len(display_words):
+            print(f"Index must be within 1 to {len(display_words)}")
         else:
-            keyword = sorted_words[index-1][0]
+            keyword = display_words[index-1][0]
             keywords.append(keyword)
             filter_by_keywords(keyword)
             count_words()
