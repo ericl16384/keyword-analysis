@@ -15,8 +15,10 @@ print(r"""
 """)
 
 
-depth = 10000
+depth = 100000
 display_count = 30
+current_file = "keywords.csv"
+keywords = []
 
 
 import csv
@@ -26,7 +28,7 @@ def load_from_csv(filename, row_count):
     global phrases, keywords
     #, phrases_sorted, phrase_frequencies, word_frequencies
     phrases = []
-    keywords = []
+    # keywords = []
     # phrases_sorted = []
     # phrase_frequencies = {}
     # word_frequencies = {}
@@ -233,11 +235,13 @@ def show_matches():
 
 
 
+def reload():
+    load_from_csv(current_file, depth)
+    filter_by_keywords(keywords)
+    count_words()
+    sort_words()
 
-load_from_csv("keywords.csv", depth)
-filter_by_keywords(keywords)
-count_words()
-sort_words()
+reload()
 
 
 
@@ -262,9 +266,13 @@ while True:
     elif ans == "/":
         print("TODO")
     elif ans == "<":
-        print("TODO")
+        keywords.pop()
+        reload()
+        show_matches()
     elif ans == "[":
-        print("TODO")
+        keywords = []
+        reload()
+        show_matches()
 
     elif ans.isdigit():
         index = int(ans)
@@ -276,6 +284,7 @@ while True:
             filter_by_keywords(keyword)
             count_words()
             sort_words()
+            show_matches()
     
     # elif 
 
