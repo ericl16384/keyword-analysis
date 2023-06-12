@@ -16,53 +16,84 @@ print(r"""
 
 
 depth = 1000
+show_matches_count = 30
 
 
 import csv
 
-rows = []
-phrases_sorted = []
-phrase_frequencies = {}
-word_frequencies = {}
 
-with open("keywords.csv", "r") as file:
-    reader = csv.reader(file)
+def load_from_csv(filename, row_count):
+    global phrases, keywords
+    #, phrases_sorted, phrase_frequencies, word_frequencies
+    phrases = []
+    keywords = []
+    # phrases_sorted = []
+    # phrase_frequencies = {}
+    # word_frequencies = {}
 
-    header = reader.__next__()
-    # print(header)
-    assert header == ['Keyword', 'Traffic', 'Exact KW', 'abortion', 'clinic', 'near', 'Campaign', 'Ad Group', 'Group']
+    with open(filename, "r") as file:
+        reader = csv.reader(file)
 
-    previous_frequency = float("inf")
-    for i in range(depth):
-        row = reader.__next__()
-        phrase = row[0]
-        frequency = int(row[1])
+        header = reader.__next__()
+        assert header == ['Keyword', 'Traffic', 'Exact KW', 'abortion', 'clinic', 'near', 'Campaign', 'Ad Group', 'Group']
 
-        rows.append(row)
-        phrases_sorted.append(phrase)
-        phrase_frequencies[phrase] = frequency
+        for i in range(row_count):
+            phrases.append(reader.__next__()[:2])
 
-        for w in phrase.split():
-            if w in word_frequencies:
-                word_frequencies[w] += frequency
+def count_words():
+    global word_counts, total_hits
+    word_counts = {}
+    total_hits = 0
+
+    for phrase, frequency in phrases:
+        words = phrase.split()
+        count = int(frequency)
+        for w in words:
+            if w in word_counts:
+                word_counts[w] += count
             else:
-                word_frequencies[w] = frequency
+                word_counts[w] = count
+        total_hits += count
 
+def sort_words():
+    global sorted_words
+    sorted_words = sorted(
+        word_counts.items(), key=lambda x:x[1], reverse=True
+    )
 
-        # print(row)
-        # print(row[:2])
-
-        if f"[{phrase}]" != row[2]:
-            print(f"WARNING: row {i}: {row}")
-
-        assert frequency <= previous_frequency
-        previous_frequency = frequency
-
+        
 
 
 
 
-working_keywords = []
+            # phrase = row[0]
+            # frequency = int(row[1])
+
+            # phrases.append(row)
+            # phrases_sorted.append(phrase)
+            # phrase_frequencies[phrase] = frequency
+
+            # for w in phrase.split():
+            #     if w in word_frequencies:
+            #         word_frequencies[w] += frequency
+            #     else:
+            #         word_frequencies[w] = frequency
+
+
+            # # print(row)
+            # # print(row[:2])
+
+            # # if f"[{phrase}]" != row[2]:
+            # #     print(f"WARNING: row {i}: {row}")
+
+            # assert frequency <= previous_frequency
+            # previous_frequency = frequency
+
+
+
+
+
+# working_keywords = []
 
 # matching_phrases = None
 # unique_phrase_matches = None
@@ -71,21 +102,38 @@ working_keywords = []
 # word_frequency_pairs = None
 
 
-# def update_filter():
-matching_phrases = phrases_sorted
-unique_phrase_matches = len(matching_phrases)
+# matching_phrases = phrases_sorted
+# unique_phrase_matches = len(matching_phrases)
 
-total_phrase_matches = 0
-for k in matching_phrases:
-    total_phrase_matches += phrase_frequencies[k]
+# total_phrase_matches = 0
+# for k in matching_phrases:
+#     total_phrase_matches += phrase_frequencies[k]
 
-word_frequency_pairs = sorted(
-    word_frequencies.items(), key=lambda x:x[1], reverse=True
-)
+# word_frequency_pairs = sorted(
+#     word_frequencies.items(), key=lambda x:x[1], reverse=True
+# )
 
-total_word_matches = sum(word_frequencies.values())
+# total_word_matches = sum(word_frequencies.values())
 
 
+# sorted_word_frequencies = sorted(word_frequencies)
+
+# for w in sorted_word_frequencies:
+#     print(w, word_frequencies[w])
+
+
+
+# def update_filter(keyword):
+#     global phrases
+#     phrases = [i for i in filter(lambda r: keyword in r[0], phrases)]
+
+#     global word_frequency_pairs
+#     word_frequency_pairs = sorted(
+#         word_frequencies.items(), key=lambda x:x[1], reverse=True
+#     )
+
+# working_keywords.append("baby")
+# update_filter("baby")
 
 
 
@@ -105,26 +153,37 @@ def help_message():
     print(" Type a number, corresponding to a word to add it to the filter")
 
 def show_matches():
-    count = 30
+    count = min(show_matches_count, len(sorted_words))
     indent = len(str(count)) + 1
     for i in range(count):
+        word, count = sorted_words[i]
+
         line = str(i+1)
         line += " " * (indent - len(line))
-        line += word_frequency_pairs[i][0]
-        line += f"  [{word_frequency_pairs[i][1]}]"
+        line += word
+        line += f"  [{count}]"
         print(line)
 
-def add_keywords(keywords):
-    keywords = keywords.split(" ")
-    working_keywords.extend(keywords)
+# def add_keywords(keywords):
+#     keywords = keywords.split(" ")
+#     working_keywords.extend(keywords)
+
+
+
+
+
+load_from_csv("keywords.csv", depth)
+count_words()
+sort_words()
+
 
 
 
 while True:
     print(f"WARNING: only using top {depth} keywords for simple proof of concept")
     print("For help, press ENTER")
-    print(f"Working keywords: {working_keywords}")
-    print(f"{unique_phrase_matches} matching unique phrases ({total_phrase_matches} hits)")
+    print(f"Working keywords: {keywords}")
+    print(f"{len(phrases)} matching unique phrases ({total_hits} hits)")
     ans = input("> ").strip()
     print()
 
@@ -145,10 +204,10 @@ while True:
         print("TODO")
 
     elif ans.isdigit():
-        index = int(ans)
-        if index < 1 or index > unique_phrase_matches:
-            print(f"Index must be within 1 to {unique_phrase_matches}")
-        else:
+        # index = int(ans)
+        # if index < 1 or index > unique_phrase_matches:
+        #     print(f"Index must be within 1 to {unique_phrase_matches}")
+        # else:
             print("TODO")
     
     # elif 
