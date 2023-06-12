@@ -86,18 +86,24 @@ def count_words():
                 word_counts[w] = count
         total_hits += count
 
-def sort_words():
-    global sorted_words, display_words
-    sorted_words = sorted(
-        word_counts.items(), key=lambda x:x[1], reverse=True
-    )
-
+def find_important_words():
+    global display_words
     display_words = []
-    for word in sorted_words:
-        if word[0] not in keywords:
-            display_words.append(word)
-        if len(display_words) >= display_count:
-            break
+
+
+    while len(display_words) <= display_count:
+        # if word[0] not in keywords:
+        #     display_words.append(word)
+
+        max_count = 0
+        max_word = None
+
+        for word, count in word_counts.items():
+            if count > max_count and word not in display_words:
+                max_count = count
+                max_word = word
+
+        display_words.append(max_word)
 
         
 
@@ -195,8 +201,8 @@ def show_matches():
 
     rows = []
     for i in range(count):
-        word, f = display_words[i]
-        rows.append((str(i+1), word, str(f)))
+        word = display_words[i]
+        rows.append((str(i+1), word, str(word_counts[word])))
     
     widths = [0, 0, 0]
     for row in rows:
@@ -239,7 +245,7 @@ def reload():
     load_from_csv(current_file, depth)
     filter_by_keywords(keywords)
     count_words()
-    sort_words()
+    find_important_words()
 
 reload()
 
@@ -283,7 +289,7 @@ while True:
             keywords.append(keyword)
             filter_by_keywords(keyword)
             count_words()
-            sort_words()
+            find_important_words()
             show_matches()
     
     # elif 
