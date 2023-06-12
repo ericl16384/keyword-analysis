@@ -33,6 +33,7 @@ def load_from_csv(filename, row_count):
     # phrase_frequencies = {}
     # word_frequencies = {}
 
+    errors = 0
     with open(filename, "r") as file:
         reader = csv.reader(file)
 
@@ -40,7 +41,6 @@ def load_from_csv(filename, row_count):
         assert header == ['Keyword', 'Traffic', 'Exact KW', 'abortion', 'clinic', 'near', 'Campaign', 'Ad Group', 'Group']
 
         for i in range(row_count):
-            errors = 0
 
             try:
                 row = reader.__next__()
@@ -57,6 +57,11 @@ def load_from_csv(filename, row_count):
                 continue
 
             phrases.append((words, count))
+    
+    print(f"{errors} erroneous lines found in {filename}")
+    
+
+        
 
 def filter_by_keywords(keywords):
     if len(keywords) == 0:
