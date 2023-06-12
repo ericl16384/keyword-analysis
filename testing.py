@@ -168,7 +168,9 @@ def sort_words():
 
 
 def help_message():
-    print("How to use: type words to build a filter to search keywords")
+    print("Normal usage:")
+    # print(" Type a word to add it to the filter")
+    print(" Type a number, corresponding to a word to add it to the filter")
     print("Special commands:")
     print("   to show this help message")
     print(" $ to exit")
@@ -177,9 +179,6 @@ def help_message():
     print(" / to review saved keywords")
     print(" < to remove the newest working keyword")
     print(" [ to clear working keywords")
-    print("Normal usage:")
-    print(" Type a word to add it to the filter")
-    print(" Type a number, corresponding to a word to add it to the filter")
 
 def show_matches():
     count = min(show_matches_count, len(sorted_words))
@@ -260,11 +259,15 @@ while True:
         print("TODO")
 
     elif ans.isdigit():
-        # index = int(ans)
-        # if index < 1 or index > unique_phrase_matches:
-        #     print(f"Index must be within 1 to {unique_phrase_matches}")
-        # else:
-            print("TODO")
+        index = int(ans)
+        if index < 1 or index > len(sorted_words):
+            print(f"Index must be within 1 to {sorted_words}")
+        else:
+            keyword = sorted_words[index-1][0]
+            keywords.append(keyword)
+            filter_by_keywords(keyword)
+            count_words()
+            sort_words()
     
     # elif 
 
