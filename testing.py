@@ -15,7 +15,7 @@ print(r"""
 """)
 
 
-depth = 100000
+depth = 10000
 show_matches_count = 30
 
 
@@ -183,15 +183,41 @@ def help_message():
 
 def show_matches():
     count = min(show_matches_count, len(sorted_words))
-    indent = len(str(count)) + 1
-    for i in range(count):
-        word, count = sorted_words[i]
 
-        line = str(i+1)
-        line += " " * (indent - len(line))
-        line += word
-        line += f"  [{count}]"
+    rows = []
+    for i in range(count):
+        word, f = sorted_words[i]
+        rows.append((str(i+1), word, str(f)))
+    
+    widths = [0, 0, 0]
+    for row in rows:
+        for i, item in enumerate(row):
+            widths[i] = max(widths[i], len(item))
+    
+    for row in rows:
+        line = ""
+        for i, item in enumerate(row):
+            if i == 2:
+                line += " " * (widths[i] - len(item) + 1)
+                line += item
+            else:
+                line += item
+                line += " " * (widths[i] - len(item) + 1)
+        # line += word
+        # line += f"  [{f}]"
         print(line)
+
+    #     second_indent = max(second_indent, len(line)+1)
+    # first_indent = len(str(count)) + 1
+    # second_indent = 0
+    
+    # lines = []
+    # for i in range(len(lines)):
+    #     lines[i] += " " * (second_indent - len(line))
+    #     lines[i] += 
+
+    # for l in lines:
+    #     print(l)
 
 # def add_keywords(keywords):
 #     keywords = keywords.split(" ")
