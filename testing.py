@@ -15,7 +15,7 @@ print(r"""
 """)
 
 
-depth = 1000
+depth = 100000
 show_matches_count = 30
 
 
@@ -38,15 +38,44 @@ def load_from_csv(filename, row_count):
         assert header == ['Keyword', 'Traffic', 'Exact KW', 'abortion', 'clinic', 'near', 'Campaign', 'Ad Group', 'Group']
 
         for i in range(row_count):
-            phrases.append(reader.__next__()[:2])
+            errors = 0
+
+            try:
+                row = reader.__next__()
+            except UnicodeDecodeError:
+                errors += 1
+                continue
+
+            words = row[0].split()
+
+            try:
+                count = int(row[1])
+            except ValueError:
+                errors += 1
+                continue
+
+            phrases.append((words, count))
+
+def filter_by_keywords(keywords):
+    if len(keywords) == 0:
+        return
+
+    global phrases
+    new_phrases = []
+    for phrase in phrases:
+        words = phrase[0]
+        for w in words:
+            if w in keywords:
+                new_phrases.append(phrase)
+                break
+    phrases = new_phrases
 
 def count_words():
     global word_counts, total_hits
     word_counts = {}
     total_hits = 0
 
-    for phrase, frequency in phrases:
-        words = phrase.split()
+    for words, frequency in phrases:
         count = int(frequency)
         for w in words:
             if w in word_counts:
@@ -173,6 +202,7 @@ def show_matches():
 
 
 load_from_csv("keywords.csv", depth)
+filter_by_keywords(keywords)
 count_words()
 sort_words()
 
