@@ -6,3 +6,5 @@ I will use Python to start because it is the easiest, but perhaps I will switch 
 
 https://youtu.be/AOO_u33z7LE
 
+*There are still a number of TODO items*
+
