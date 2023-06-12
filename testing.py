@@ -15,7 +15,7 @@ print(r"""
 """)
 
 
-depth = 100000
+depth = 1000000000 #10**6
 display_count = 30
 current_file = "keywords.csv"
 keywords = []
@@ -25,13 +25,15 @@ import csv
 
 
 def load_from_csv(filename, row_count):
-    global phrases, keywords
+    global phrases, keywords, whole_file_read
     #, phrases_sorted, phrase_frequencies, word_frequencies
     phrases = []
     # keywords = []
     # phrases_sorted = []
     # phrase_frequencies = {}
     # word_frequencies = {}
+
+    whole_file_read = False
 
     errors = 0
     with open(filename, "r") as file:
@@ -40,10 +42,13 @@ def load_from_csv(filename, row_count):
         header = reader.__next__()
         assert header == ['Keyword', 'Traffic', 'Exact KW', 'abortion', 'clinic', 'near', 'Campaign', 'Ad Group', 'Group']
 
-        for i in range(row_count):
-
+        i = 0
+        while i < row_count:
             try:
                 row = reader.__next__()
+            except StopIteration:
+                whole_file_read = True
+                break
             except UnicodeDecodeError:
                 errors += 1
                 continue
@@ -57,8 +62,16 @@ def load_from_csv(filename, row_count):
                 continue
 
             phrases.append((words, count))
+
+            i += 1
     
-    print(f"{errors} erroneous lines found in {filename}")
+    if not whole_file_read:
+        print(f"WARNING: only using top {depth} keywords")
+        
+    print(f"Read {i} lines from {filename}")
+    
+    if errors:
+        print(f"{errors} erroneous lines found in {filename}")
     
 
         
@@ -258,7 +271,6 @@ reload()
 
 
 while True:
-    print(f"WARNING: only using top {depth} keywords for simple proof of concept")
     print("For help, press ENTER")
     print(f"Working keywords: {keywords}")
     print(f"{len(phrases)} matching unique phrases ({total_hits} hits)")
