@@ -8,5 +8,5 @@ https://youtu.be/AOO_u33z7LE
 
 *There are still a number of TODO items*
 
-Please try each command. I am still working on implementing them, and some of them just say "TODO."
+Please try each command. I am still working on implementing them, and some of them may just say "TODO."
 

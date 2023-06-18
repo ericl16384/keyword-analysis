@@ -1,7 +1,3 @@
-import csv, datetime
-
-
-
 print(r"""
   _  __                                _ 
  | |/ /                               | |
@@ -18,19 +14,21 @@ print(r"""
                          |___/           
 """)
 
+import csv
 
 
-depth = 1000000000 #10**6
+
+depth = 10**9
 display_count = 30
-current_file = "keywords.csv"
+load_file = "keywords.csv"
 keywords = []
 
 
 
 def load_from_csv(filename, row_count):
-    global phrases, keywords, whole_file_read
+    global phrase_counts, keywords, whole_file_read
     #, phrases_sorted, phrase_frequencies, word_frequencies
-    phrases = []
+    phrase_counts = []
     # keywords = []
     # phrases_sorted = []
     # phrase_frequencies = {}
@@ -67,7 +65,7 @@ def load_from_csv(filename, row_count):
                 errors += 1
                 continue
 
-            phrases.append((words, count))
+            phrase_counts.append((words, count))
 
             i += 1
     
@@ -82,26 +80,48 @@ def load_from_csv(filename, row_count):
 
         
 
-def filter_by_keywords(keywords):
+def filter_by_keywords():
     if len(keywords) == 0:
         return
 
-    global phrases
+    global phrase_counts
     new_phrases = []
-    for phrase in phrases:
-        words = phrase[0]
-        for w in words:
-            if w in keywords:
-                new_phrases.append(phrase)
+
+    # print(phrase_counts)
+    # print(keywords)
+
+    # blocked_phrases = 0
+    for phrase_count in phrase_counts:
+        phrase, count = phrase_count
+        keep = True
+        for k in keywords:
+            # print(phrase, k)
+            if k not in phrase or k[0] == "!" and k[1:] in phrase:
+                # blocked_phrases += 1
+                # print(f"Ignoring '{phrase}'")
+                keep = False
                 break
-    phrases = new_phrases
+            # if k in phrase:
+            #     keep = True
+            #     print(f"{k} in '{phrase}'")
+        if keep:
+            new_phrases.append(phrase_count)
+            # print(f"Keeping '{phrase}'")
+            # print(phrase)
+    # print(new_phrases)
+    phrase_counts = new_phrases
+
+    # print(phrase_counts)
+    # assert False
+    # input()
 
 def count_words():
     global word_counts, total_hits
     word_counts = {}
     total_hits = 0
 
-    for words, frequency in phrases:
+    # print(phrase_counts[0])
+    for words, frequency in phrase_counts:
         count = int(frequency)
         for w in words:
             assert isinstance(w, str)
@@ -110,6 +130,7 @@ def count_words():
                 word_counts[w] += count
             else:
                 word_counts[w] = count
+                # print(w)
         total_hits += count
 
 def find_display_words():
@@ -136,21 +157,67 @@ def find_display_words():
 
         display_words.append(max_word)
 
+def add_keyword_from_display_words(rank, negate=False):
+    rank = int(rank)
+    if rank < 1 or rank > len(display_words):
+        print(f"Number must be within 1 to {len(display_words)}")
+    else:
+        index = rank - 1
+        keyword = display_words[index]
+        if negate:
+            keyword = "!" + keyword
+        # print(keywords)
+        keywords.append(keyword)
+        # print(keywords)
+        print(f"Added keyword: '{keyword}'")
+        filter_by_keywords()
+        count_words()
+        find_display_words()
+        print()
+        show_matches()
 
+
+
+
+
+
+
+def reload():
+    print(f"Loading from {load_file}")
+    load_from_csv(load_file, depth)
+    filter_by_keywords()
+    count_words()
+    find_display_words()
+
+def save_searches():
+    filename = "SAVEFILE " + " ".join(keywords)
+    filename += ".csv"
+    print(f"saving to '{filename}'")
+
+    header = ["Keyword", "Frequency"]
+    with open(filename, "w", newline="") as f:
+        writer = csv.writer(f)
+        writer.writerow(header)
+        for phrase, count in phrase_counts:
+            writer.writerow((" ".join(phrase), count))
+
+
+            
 
 
 def help_message():
     print("Normal usage:")
     # print(" Type a word to add it to the filter")
-    print(" Type a number, corresponding to a word to add it to the filter")
+    print("  Type a number, corresponding to a word to add it to the filter")
+    print("  Type a ! before the number, to disallow that word")
     print("Special commands:")
-    print("   to show this help message")
-    print(" $ to exit program")
-    print(" ? to show top matching words")
-    print(" + to save current working keywords")
-    # print(" / to review saved keywords")
-    print(" < to remove the newest working keyword")
-    print(" [ to clear working keywords")
+    print("    to show this help message")
+    print("  $ to exit program")
+    print("  ? to show top matching words")
+    print("  + to save current working keywords")
+    # print("  / to review saved keywords")
+    print("  < to remove the newest working keyword")
+    print("  [ to clear working keywords")
 
 def show_matches():
     if len(display_words) == 0:
@@ -183,36 +250,13 @@ def show_matches():
 
 
 
-
-def reload():
-    print(f"Loading from {current_file}")
-    load_from_csv(current_file, depth)
-    filter_by_keywords(keywords)
-    count_words()
-    find_display_words()
-
-def save_searches():
-    filename = "SAVEFILE " + " ".join(keywords)
-    filename += ".csv"
-    print(f"saving to '{filename}'")
-
-    header = ["Keyword", "Frequency"]
-    with open(filename, "w", newline="") as f:
-        writer = csv.writer(f)
-        writer.writerow(header)
-        for phrase, count in phrases:
-            writer.writerow((" ".join(phrase), count))
-
 reload()
 print()
-
-
-
 
 while True:
     print("For help, press ENTER")
     print(f"Working keywords: {keywords}")
-    print(f"{len(phrases)} matching unique phrases ({total_hits} hits)")
+    print(f"{len(phrase_counts)} matching unique phrases ({total_hits} hits)")
     try:
         ans = input("> ")
     except EOFError as err:
@@ -257,18 +301,12 @@ while True:
         show_matches()
 
     elif ans.isdigit():
-        index = int(ans)
-        if index < 1 or index > len(display_words):
-            print(f"Index must be within 1 to {len(display_words)}")
-        else:
-            keyword = display_words[index-1]
-            keywords.append(keyword)
-            filter_by_keywords(keyword)
-            count_words()
-            find_display_words()
-            show_matches()
+        add_keyword_from_display_words(ans)
     
-    # elif 
+    elif ans[0] == "!" and ans[1:].isdigit():
+        print("TODO")
+        # rank = ans[1:]
+        # add_keyword_from_display_words(rank, True)
 
     else:
         print(f"Unrecognized input: '{ans}'")
