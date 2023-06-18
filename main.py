@@ -204,11 +204,11 @@ def save_searches():
     # assert False
 
     header = ["Keyword", "Frequency"]
-    with open(filename, "w") as f:
+    with open(filename, "w", newline="") as f:
         writer = csv.writer(f)
         writer.writerow(header)
         for phrase, count in phrases:
-            print(" ".join(phrase))
+            # print(" ".join(phrase))
             writer.writerow((" ".join(phrase), count))
 
 reload()
