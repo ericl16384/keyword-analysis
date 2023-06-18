@@ -1,3 +1,7 @@
+import csv, datetime
+
+
+
 print(r"""
   _  __                                _ 
  | |/ /                               | |
@@ -15,13 +19,12 @@ print(r"""
 """)
 
 
+
 depth = 1000000000 #10**6
 display_count = 30
 current_file = "keywords.csv"
 keywords = []
 
-
-import csv
 
 
 def load_from_csv(filename, row_count):
@@ -72,9 +75,9 @@ def load_from_csv(filename, row_count):
         print(f"WARNING: only using top {depth} keywords")
     
     if errors:
-        print(f"{errors} erroneous lines found in {filename}")
+        print(f"{errors} erroneous lines found in '{filename}'")
 
-    print(f"Read {i} lines from {filename}")
+    print(f"Read {i} lines from '{filename}'")
     
 
         
@@ -179,6 +182,13 @@ def reload():
     count_words()
     find_display_words()
 
+def save_searches():
+    filename = "SAVEFILE "
+    for k in keywords:
+        filename += k + " "
+    filename += str(datetime.datetime.now()) + ".csv"
+    print(f"saving to '{filename}' TODO")
+
 reload()
 print()
 
@@ -200,7 +210,10 @@ while True:
     elif ans == "?":
         show_matches()
     elif ans == "+":
-        print("TODO")
+        if len(keywords) == 0:
+            print("Before saving, you must select at least one keyword")
+        else:
+            save_searches()
     # elif ans == "/":
     #     print("TODO")
     elif ans == "<":
