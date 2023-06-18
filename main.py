@@ -118,9 +118,6 @@ def find_display_words():
 
 
     while len(display_words) < display_count:
-        # if word[0] not in keywords:
-        #     display_words.append(word)
-
         max_count = 0
         max_word = None
 
@@ -278,6 +275,3 @@ while True:
 
     print()
 
-
-
-print("TODO: save keywords to a file for reload")
