@@ -142,7 +142,7 @@ def help_message():
     print("   to show this help message")
     print(" $ to exit")
     print(" ? to show top matching words")
-    # print(" + to save current working keywords")
+    print(" + to save current working keywords")
     # print(" / to review saved keywords")
     print(" < to remove the newest working keyword")
     print(" [ to clear working keywords")
@@ -234,8 +234,11 @@ while True:
             print()
             show_matches()
     elif ans == "[":
-        for k in keywords:
-            print(f"Removed '{k}' from keywords")
+        if len(keywords) == 0:
+            print("Keyword list already empty")
+        else:
+            for k in keywords:
+                print(f"Removed '{k}' from keywords")
         keywords = []
         reload()
         print()
