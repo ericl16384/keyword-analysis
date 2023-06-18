@@ -195,7 +195,7 @@ def reload():
     find_display_words()
 
 def save_searches():
-    filename = "_SAVEFILE " + " ".join(keywords)
+    filename = "SAVEFILE " + " ".join(keywords)
     filename += ".csv"
     print(f"saving to '{filename}'")
 
