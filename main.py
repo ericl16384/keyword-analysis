@@ -195,20 +195,15 @@ def reload():
     find_display_words()
 
 def save_searches():
-    filename = "SAVEFILE " + " ".join(keywords)
-    # filename += " " + str(datetime.datetime.now())
+    filename = "_SAVEFILE " + " ".join(keywords)
     filename += ".csv"
     print(f"saving to '{filename}'")
-
-    # print(phrases[0])
-    # assert False
 
     header = ["Keyword", "Frequency"]
     with open(filename, "w", newline="") as f:
         writer = csv.writer(f)
         writer.writerow(header)
         for phrase, count in phrases:
-            # print(" ".join(phrase))
             writer.writerow((" ".join(phrase), count))
 
 reload()
