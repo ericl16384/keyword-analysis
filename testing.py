@@ -195,20 +195,21 @@ def reload():
     find_display_words()
 
 def save_searches():
-    filename = "saves/KEYWORDS " + " ".join(keywords) + " "
-    filename += str(datetime.datetime.now()) + ".csv"
+    filename = "SAVEFILE " + " ".join(keywords)
+    # filename += " " + str(datetime.datetime.now())
+    filename += ".csv"
     print(f"saving to '{filename}'")
 
     # print(phrases[0])
     # assert False
 
     header = ["Keyword", "Frequency"]
-    with open(filename) as f:
+    with open(filename, "w") as f:
         writer = csv.writer(f)
         writer.writerow(header)
-        for phrase in phrases:
-            writer.writerow(" ".join(phrase))
-            break
+        for phrase, count in phrases:
+            print(" ".join(phrase))
+            writer.writerow((" ".join(phrase), count))
 
 reload()
 print()
@@ -220,7 +221,14 @@ while True:
     print("For help, press ENTER")
     print(f"Working keywords: {keywords}")
     print(f"{len(phrases)} matching unique phrases ({total_hits} hits)")
-    ans = input("> ").strip()
+    try:
+        ans = input("> ")
+    except EOFError as err:
+        print()
+        print("Error in input. Please try again.")
+        print()
+        continue
+    ans = ans.strip()
     print()
 
     if ans == "":
