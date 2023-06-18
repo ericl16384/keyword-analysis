@@ -104,6 +104,8 @@ def count_words():
     for words, frequency in phrases:
         count = int(frequency)
         for w in words:
+            assert isinstance(w, str)
+            assert isinstance(count, int)
             if w in word_counts:
                 word_counts[w] += count
             else:
@@ -131,6 +133,9 @@ def find_display_words():
                 continue
             max_count = count
             max_word = word
+        
+        if max_word == None:
+            break
 
         display_words.append(max_word)
 
@@ -151,9 +156,16 @@ def help_message():
     print(" [ to clear working keywords")
 
 def show_matches():
+    if len(display_words) == 0:
+        print("No new words found using current keywords")
+
     rows = []
     for i, word in enumerate(display_words):
-        rows.append((str(i+1), word, str(word_counts[word])))
+        try:
+            rows.append((str(i+1), word, str(word_counts[word])))
+        except:
+            print("ERROR")
+            print(str(i+1), word)
     
     widths = [0, 0, 0]
     for row in rows:
@@ -183,11 +195,20 @@ def reload():
     find_display_words()
 
 def save_searches():
-    filename = "SAVEFILE "
-    for k in keywords:
-        filename += k + " "
+    filename = "saves/KEYWORDS " + " ".join(keywords) + " "
     filename += str(datetime.datetime.now()) + ".csv"
-    print(f"saving to '{filename}' TODO")
+    print(f"saving to '{filename}'")
+
+    # print(phrases[0])
+    # assert False
+
+    header = ["Keyword", "Frequency"]
+    with open(filename) as f:
+        writer = csv.writer(f)
+        writer.writerow(header)
+        for phrase in phrases:
+            writer.writerow(" ".join(phrase))
+            break
 
 reload()
 print()
