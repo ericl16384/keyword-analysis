@@ -70,11 +70,11 @@ def load_from_csv(filename, row_count):
     
     if not whole_file_read:
         print(f"WARNING: only using top {depth} keywords")
-
-    print(f"Read {i} lines from {filename}")
     
     if errors:
         print(f"{errors} erroneous lines found in {filename}")
+
+    print(f"Read {i} lines from {filename}")
     
 
         
