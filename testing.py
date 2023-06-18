@@ -297,13 +297,16 @@ while True:
         if len(keywords) == 0:
             print("Keyword list already empty")
         else:
-            print(f"Removed '{keywords.pop()}'")
+            print(f"Removed '{keywords.pop()}' from keywords")
             reload()
             print()
             show_matches()
     elif ans == "[":
+        for k in keywords:
+            print(f"Removed '{k}' from keywords")
         keywords = []
         reload()
+        print()
         show_matches()
 
     elif ans.isdigit():
@@ -311,7 +314,7 @@ while True:
         if index < 1 or index > len(display_words):
             print(f"Index must be within 1 to {len(display_words)}")
         else:
-            keyword = display_words[index-1][0]
+            keyword = display_words[index-1]
             keywords.append(keyword)
             filter_by_keywords(keyword)
             count_words()
