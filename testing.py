@@ -140,7 +140,7 @@ def help_message():
     print(" Type a number, corresponding to a word to add it to the filter")
     print("Special commands:")
     print("   to show this help message")
-    print(" $ to exit")
+    print(" $ to exit program")
     print(" ? to show top matching words")
     print(" + to save current working keywords")
     # print(" / to review saved keywords")
@@ -148,13 +148,8 @@ def help_message():
     print(" [ to clear working keywords")
 
 def show_matches():
-    # count = min(display_count, len(display_words))
-
     rows = []
     for i, word in enumerate(display_words):
-        # word = display_words[i]
-        # if word in keywords:
-        #     continue
         rows.append((str(i+1), word, str(word_counts[word])))
     
     widths = [0, 0, 0]
@@ -171,25 +166,8 @@ def show_matches():
             else:
                 line += item
                 line += " " * (widths[i] - len(item) + 1)
-        # line += word
-        # line += f"  [{f}]"
         print(line)
 
-    #     second_indent = max(second_indent, len(line)+1)
-    # first_indent = len(str(count)) + 1
-    # second_indent = 0
-    
-    # lines = []
-    # for i in range(len(lines)):
-    #     lines[i] += " " * (second_indent - len(line))
-    #     lines[i] += 
-
-    # for l in lines:
-    #     print(l)
-
-# def add_keywords(keywords):
-#     keywords = keywords.split(" ")
-#     working_keywords.extend(keywords)
 
 
 
@@ -223,8 +201,8 @@ while True:
         show_matches()
     elif ans == "+":
         print("TODO")
-    elif ans == "/":
-        print("TODO")
+    # elif ans == "/":
+    #     print("TODO")
     elif ans == "<":
         if len(keywords) == 0:
             print("Keyword list already empty")
