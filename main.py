@@ -95,12 +95,22 @@ def filter_by_keywords():
         phrase, count = phrase_count
         keep = True
         for k in keywords:
+            if k[0] == "!":
+                k = k[1:]
+                if k in phrase:
+                    keep = False
+                    break
+            else:
+                if k not in phrase:
+                    keep = False
+                    break
+
             # print(phrase, k)
-            if k not in phrase or k[0] == "!" and k[1:] in phrase:
-                # blocked_phrases += 1
-                # print(f"Ignoring '{phrase}'")
-                keep = False
-                break
+            # if k not in phrase or (k[0] == "!" and k[1:] in phrase):
+            #     if k[0] == "!" and k[1:] in phrase:
+            #         print(k[1:])
+            #     keep = False
+            #     break
             # if k in phrase:
             #     keep = True
             #     print(f"{k} in '{phrase}'")
@@ -192,7 +202,7 @@ def reload():
 def save_searches():
     filename = "SAVEFILE " + " ".join(keywords)
     filename += ".csv"
-    print(f"saving to '{filename}'")
+    print(f"Saving to '{filename}'")
 
     header = ["Keyword", "Frequency"]
     with open(filename, "w", newline="") as f:
@@ -304,9 +314,9 @@ while True:
         add_keyword_from_display_words(ans)
     
     elif ans[0] == "!" and ans[1:].isdigit():
-        print("TODO")
-        # rank = ans[1:]
-        # add_keyword_from_display_words(rank, True)
+        # print("TODO")
+        rank = ans[1:]
+        add_keyword_from_display_words(rank, True)
 
     else:
         print(f"Unrecognized input: '{ans}'")
