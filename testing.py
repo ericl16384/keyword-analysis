@@ -212,8 +212,8 @@ def help_message():
     print("   to show this help message")
     print(" $ to exit")
     print(" ? to show top matching words")
-    print(" + to save current working keywords")
-    print(" / to review saved keywords")
+    # print(" + to save current working keywords")
+    # print(" / to review saved keywords")
     print(" < to remove the newest working keyword")
     print(" [ to clear working keywords")
 
@@ -263,12 +263,14 @@ def show_matches():
 
 
 def reload():
+    print(f"Loading from {current_file}")
     load_from_csv(current_file, depth)
     filter_by_keywords(keywords)
     count_words()
     find_important_words()
 
 reload()
+print()
 
 
 
@@ -292,9 +294,13 @@ while True:
     elif ans == "/":
         print("TODO")
     elif ans == "<":
-        keywords.pop()
-        reload()
-        show_matches()
+        if len(keywords) == 0:
+            print("Keyword list already empty")
+        else:
+            print(f"Removed '{keywords.pop()}'")
+            reload()
+            print()
+            show_matches()
     elif ans == "[":
         keywords = []
         reload()
