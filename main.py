@@ -117,7 +117,7 @@ def find_display_words():
     display_words = []
 
 
-    while len(display_words) <= display_count:
+    while len(display_words) < display_count:
         # if word[0] not in keywords:
         #     display_words.append(word)
 
