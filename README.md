@@ -18,4 +18,7 @@ for city data
 https://gist.github.com/keeguon/2310008
 for country data
 
+https://gist.github.com/mshafrir/2646763
+for state data
+
 

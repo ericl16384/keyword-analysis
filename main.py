@@ -14,7 +14,10 @@ print(r"""
                          |___/           
 """)
 
-import csv
+import csv, json
+
+
+print("TODO: word-match")
 
 
 
@@ -22,6 +25,12 @@ depth = 10**9
 display_count = 30
 load_file = "keywords.csv"
 keywords = []
+
+
+
+
+
+
 
 
 
@@ -54,9 +63,10 @@ def load_from_csv(filename, row_count):
                 errors += 1
                 continue
 
-            words = row[0].split()
+            phrase = row[0]
+            # words = phrase.split()
 
-            if len(words) == 0:
+            if not phrase:
                 continue
 
             try:
@@ -65,7 +75,7 @@ def load_from_csv(filename, row_count):
                 errors += 1
                 continue
 
-            phrase_counts.append((words, count))
+            phrase_counts.append((phrase, count))
 
             i += 1
     
@@ -131,9 +141,9 @@ def count_words():
     total_hits = 0
 
     # print(phrase_counts[0])
-    for words, frequency in phrase_counts:
+    for phrase, frequency in phrase_counts:
         count = int(frequency)
-        for w in words:
+        for w in phrase.split():
             assert isinstance(w, str)
             assert isinstance(count, int)
             if w in word_counts:
@@ -208,8 +218,9 @@ def save_searches():
     with open(filename, "w", newline="") as f:
         writer = csv.writer(f)
         writer.writerow(header)
-        for phrase, count in phrase_counts:
-            writer.writerow((" ".join(phrase), count))
+        # for phrase, count in phrase_counts:
+        #     writer.writerow((" ".join(phrase), count))
+        writer.writerows(phrase_counts)
 
 
             

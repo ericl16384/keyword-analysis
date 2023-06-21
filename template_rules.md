@@ -25,12 +25,15 @@ abortion pill
 abortion
 ```
 
+## Word match and exact match
+
+Text-match example: `butterflies` or `nice` will hit the phrase `butterflies are nice`, but `butter` or `flies` or `ice` will also.
+Word-match example: `"butterflies"` or `"nice"` will hit the phrase `butterflies are nice`, not `butter` or `flies` or `ice`.
+
 ## Keyword information
 
  - No capitalization was found in keywords.csv, so capitalization is ignored.
  - By default, keywords are searched by text-match, not word match. To search by word-match, place `"` quotation marks (not `“` or `”`) around the entire entry. Variations from this should raise an error.
-    - Text-match example: `butterflies` or `nice` will hit the phrase `butterflies are nice`, but `butter` or `flies` or `ice` will also.
-    - Word-match example: `"butterflies"` or `"nice"` will hit the phrase `butterflies are nice`, not `butter` or `flies` or `ice`.
  - Due to the word match policy, entries with a space included must have quotation marks around them.
  <!-- - All keywords must be in separate columns, or they will be interpreted as text match. -->
 
