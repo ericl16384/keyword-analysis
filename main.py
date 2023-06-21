@@ -16,6 +16,11 @@ print(r"""
 
 import csv, json
 
+print("Loading locations")
+with open("locations.json", "r") as f:
+    locations = f.read()
+locations = set(locations)
+
 
 print("TODO: word-match")
 
@@ -35,6 +40,8 @@ keywords = []
 
 
 def load_from_csv(filename, row_count):
+    print(f"Loading from {filename}")
+
     global phrase_counts, keywords, whole_file_read
     #, phrases_sorted, phrase_frequencies, word_frequencies
     phrase_counts = []
@@ -88,7 +95,13 @@ def load_from_csv(filename, row_count):
     print(f"Read {i} lines from '{filename}'")
     
 
-        
+
+def replace_locations():
+    for phrase, count in phrase_counts:
+        words = phrase.split()
+        for start in range(words)
+        # triangle number of parts of the phrase
+        # start and end
 
 def filter_by_keywords():
     if len(keywords) == 0:

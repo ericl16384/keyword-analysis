@@ -37,6 +37,10 @@ Word-match example: `"butterflies"` or `"nice"` will hit the phrase `butterflies
  - Due to the word match policy, entries with a space included must have quotation marks around them.
  <!-- - All keywords must be in separate columns, or they will be interpreted as text match. -->
 
+## Location replacement
+
+Before filtering into adgroups, all locations are replaced with LOCATION.
+
 ## Resulting CSV data file
 
 For every adgroup, every search phrase will be listed as follows, in order of frequency:
