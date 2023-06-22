@@ -1,6 +1,7 @@
 import csv, json
 
 with open("adgroups_template.csv", "r") as f:
+# with open("example_template.csv", "r") as f:
     reader = csv.reader(f)
     
     lines = []
@@ -25,13 +26,13 @@ with open("adgroups_template.csv", "r") as f:
 # data = {}
 # path = []
 # for line in lines:
-#     for i, item in enumerate(line):
+#     for x, item in enumerate(line):
 #         if not item:
 #             continue
         
-#         while i > len(path):
+#         while x > len(path):
 #             path.append("")
-#         if i == len(path):
+#         if x == len(path):
 
 #             data[]
 
@@ -42,26 +43,121 @@ with open("adgroups_template.csv", "r") as f:
 
 
 adgroups = []
-line_trace = []
-index = 0
+trace = []
+y = 0
 
-index = 35
+# y = 35
+# y = 41
 
-while index < len(lines):
-    line = lines[index]
+while y < len(lines):
+    line = lines[y]
 
-    for i, item in enumerate(line):
-        if not item:
-            continue
+    x = 0
+    while x < len(line):
+        if x > 3:
+            break
+
+        # print(y, x)
+        item = line[x]
 
         if item:
-            if i >= len(line_trace):
-                line_trace.append(index)
-                break
+            current = (y, x, item)
+
+
+            # for t in trace:
+            #     print(t)
+            # print("current:", current)
+            # input()
+
+
+            while trace and current[1] <= trace[-1][1]:
+                adgroup = []
+                for l in trace:
+                    adgroup.append(l[2])
+                adgroups.append(adgroup)
+                trace.pop()
+
+                # print("adgroup:", adgroups[-1])
+                # print()
+
+            trace.append(current)
+        
+        x += 1
+
+
+
+
+            
+
+            # if len(trace) < 2:
+            #     x += 1
+
+            # # same column
+            # elif trace[-1][1] == trace[-2][1]:
+            #     adgroup = []
+            #     for l in trace:
+            #         adgroup.append(l[2])
+            #     adgroups.append(adgroup)
+            #     print("adgroup:", adgroups[-1])
+
+            # else:
+            #     x += 1
+
+
+            # if len(trace) < 2:
+            #     pass
+            # new_x = trace[-1][1]
+            # old_x = trace[-2][1]
+
+            # # new column
+            # if new_x > old_x:
+            #     pass
+
+            # # same column
+            # elif new_x <= old_x:
+            #     adgroup = []
+            #     for l in trace:
+            #         adgroup.append(l[2])
+            #     adgroups.append(adgroup)
+            #     trace.pop()
+            #     trace.pop()
+            #     print("adgroup:", adgroups[-1])
+            #     print()
+            #     continue
+            
+            # else:
+            #     # trace.append((y, x, item))
+            #     print("todo")
+            #     input()
+
+
+
+            # else:
+            #     trace.append((y, x, item))
+            #     print("trace:", trace)
+            #     input()
+
+
+
+            # print(x, len(trace))
+            # if x > len(trace):
+            #     pass
+            # elif x == len(trace):
+            #     y -= 1
+            # else:
+            #     adgroup_found()
+            #     trace.pop()
+            #     y -= 2
+        
+    # print(y, trace)
+    # input()
     
-    index += 1
+    y += 1
 
-    if index == 47:
-        break
+    # if y == 47:
+    #     break
 
-print(line_trace)
+# print([x+1 for x in trace])
+
+for adgroup in adgroups:
+    print(adgroup)
