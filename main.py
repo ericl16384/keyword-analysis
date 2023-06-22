@@ -1,46 +1,27 @@
-print(r"""
-  _  __                                _ 
- | |/ /                               | |
- | ' / ___ _   ___      _____  _ __ __| |
- |  < / _ \ | | \ \ /\ / / _ \| '__/ _` |
- | . \  __/ |_| |\ V  V / (_) | | | (_| |
- |_|\_\___|\__, | \_/\_/ \___/|_|  \__,_|
-     /\     __/ |     | |         (_)    
-    /  \   |___/  __ _| |_   _ ___ _ ___ 
-   / /\ \ | '_ \ / _` | | | | / __| / __|
-  / ____ \| | | | (_| | | |_| \__ \ \__ \
- /_/    \_\_| |_|\__,_|_|\__, |___/_|___/
-                          __/ |          
-                         |___/           
-""")
-
 import csv, json
-
-print("Loading locations")
-with open("locations.json", "r") as f:
-    locations = f.read()
-locations = set(json.loads(locations))
 
 
 print("TODO: word-match")
 
 
+locations_file = "locations.json"
+searches_file = "keywords.csv"
+adgroups_file = "adgroups_file.csv"
 
-depth = 10**9
+# depth = 10**9
 display_count = 30
-load_file = "keywords.csv"
 keywords = []
 
 
+def load_locations():
+    global locations
+    print("Loading locations")
+    with open(locations_file, "r") as f:
+        locations = f.read()
+    locations = set(json.loads(locations))
 
-
-
-
-
-
-
-def load_from_csv(filename, row_count):
-    print(f"Loading from {filename}")
+def load_searches():
+    print(f"Loading from {searches_file}")
 
     global phrase_counts, keywords, whole_file_read
     #, phrases_sorted, phrase_frequencies, word_frequencies
@@ -53,7 +34,7 @@ def load_from_csv(filename, row_count):
     whole_file_read = False
 
     errors = 0
-    with open(filename, "r") as file:
+    with open(searches_file, "r") as file:
         reader = csv.reader(file)
 
         # header = reader.__next__()
@@ -64,7 +45,7 @@ def load_from_csv(filename, row_count):
         )
 
         i = 0
-        while i < row_count:
+        while not whole_file_read:
             try:
                 row = reader.__next__()
             except StopIteration:
@@ -90,14 +71,55 @@ def load_from_csv(filename, row_count):
 
             i += 1
     
-    if not whole_file_read:
-        print(f"WARNING: only using top {depth} keywords")
+    # if not whole_file_read:
+    #     print(f"WARNING: only using top {depth} keywords")
     
     if errors:
-        print(f"{errors} erroneous lines found in '{filename}'")
+        print(f"{errors} erroneous lines found in '{searches_file}'")
 
-    print(f"Read {i} lines from '{filename}'")
-    
+    print(f"Read {i} lines from '{searches_file}'")
+
+def load_adgroups():
+    global adgroups
+
+    with open(adgroups_file, "r") as f:
+        reader = csv.reader(f)
+        
+        lines = []
+
+        more_lines = True
+        while more_lines:
+            try:
+                lines.append(reader.__next__())
+            except StopIteration:
+                more_lines = False
+
+    adgroups = []
+    trace = []
+    y = 0
+
+    while y < len(lines):
+        line = lines[y]
+
+        x = 0
+        while x < len(line):
+            item = line[x]
+
+            if item:
+                current = (y, x, item)
+
+                while trace and current[1] <= trace[-1][1]:
+                    adgroup = []
+                    for l in trace:
+                        adgroup.append(l[2])
+                    adgroups.append(adgroup)
+                    trace.pop()
+
+                trace.append(current)
+            
+            x += 1
+        y += 1
+
 
 def filter_by_keywords():
     if len(keywords) == 0:
@@ -219,9 +241,9 @@ def replace_locations():
                     words = phrase_counts[i][0].split()
 
 
-
 def reload():
-    load_from_csv(load_file, depth)
+    load_searches()
+    load_locations()
     replace_locations()
     filter_by_keywords()
     count_words()
@@ -239,7 +261,6 @@ def save_searches():
         # for phrase, count in phrase_counts:
         #     writer.writerow((" ".join(phrase), count))
         writer.writerows(phrase_counts)
-
 
 
 def help_message():
@@ -285,67 +306,88 @@ def show_matches():
         print(line)
 
 
-reload()
-print()
+def user_interface():
+    global keywords
 
-
-while True:
-    print("For help, press ENTER")
-    print(f"Working keywords: {keywords}")
-    print(f"{len(phrase_counts)} matching unique phrases ({total_hits} hits)")
-    try:
-        ans = input("> ")
-    except EOFError as err:
+    print(r"""
+  _  __                                _ 
+ | |/ /                               | |
+ | ' / ___ _   ___      _____  _ __ __| |
+ |  < / _ \ | | \ \ /\ / / _ \| '__/ _` |
+ | . \  __/ |_| |\ V  V / (_) | | | (_| |
+ |_|\_\___|\__, | \_/\_/ \___/|_|  \__,_|
+     /\     __/ |     | |         (_)    
+    /  \   |___/  __ _| |_   _ ___ _ ___ 
+   / /\ \ | '_ \ / _` | | | | / __| / __|
+  / ____ \| | | | (_| | | |_| \__ \ \__ \
+ /_/    \_\_| |_|\__,_|_|\__, |___/_|___/
+                          __/ |          
+                         |___/           
+""")
+    
+    while True:
+        print("For help, press ENTER")
+        print(f"Working keywords: {keywords}")
+        print(f"{len(phrase_counts)} matching unique phrases ({total_hits} hits)")
+        try:
+            ans = input("> ")
+        except EOFError as err:
+            print()
+            print("Error in input. Please try again.")
+            print()
+            continue
+        ans = ans.strip()
         print()
-        print("Error in input. Please try again.")
-        print()
-        continue
-    ans = ans.strip()
-    print()
 
-    if ans == "":
-        help_message()
+        if ans == "":
+            help_message()
 
-    elif ans == "$":
-        break
-    elif ans == "?":
-        show_matches()
-    elif ans == "+":
-        if len(keywords) == 0:
-            print("Before saving, you must select at least one keyword")
-        else:
-            save_searches()
-    # elif ans == "/":
-    #     print("TODO")
-    elif ans == "<":
-        if len(keywords) == 0:
-            print("Keyword list already empty")
-        else:
-            print(f"Removed '{keywords.pop()}' from keywords")
+        elif ans == "$":
+            break
+        elif ans == "?":
+            show_matches()
+        elif ans == "+":
+            if len(keywords) == 0:
+                print("Before saving, you must select at least one keyword")
+            else:
+                save_searches()
+        # elif ans == "/":
+        #     print("TODO")
+        elif ans == "<":
+            if len(keywords) == 0:
+                print("Keyword list already empty")
+            else:
+                print(f"Removed '{keywords.pop()}' from keywords")
+                reload()
+                print()
+                show_matches()
+        elif ans == "[":
+            if len(keywords) == 0:
+                print("Keyword list already empty")
+            else:
+                for k in keywords:
+                    print(f"Removed '{k}' from keywords")
+            keywords = []
             reload()
             print()
             show_matches()
-    elif ans == "[":
-        if len(keywords) == 0:
-            print("Keyword list already empty")
+
+        elif ans.isdigit():
+            add_keyword_from_display_words(ans)
+        
+        elif ans[0] == "!" and ans[1:].isdigit():
+            # print("TODO")
+            rank = ans[1:]
+            add_keyword_from_display_words(rank, True)
+
         else:
-            for k in keywords:
-                print(f"Removed '{k}' from keywords")
-        keywords = []
-        reload()
+            print(f"Unrecognized input: '{ans}'")
+
         print()
-        show_matches()
 
-    elif ans.isdigit():
-        add_keyword_from_display_words(ans)
-    
-    elif ans[0] == "!" and ans[1:].isdigit():
-        # print("TODO")
-        rank = ans[1:]
-        add_keyword_from_display_words(rank, True)
 
-    else:
-        print(f"Unrecognized input: '{ans}'")
+reload()
+print()
+user_interface()
 
-    print()
 

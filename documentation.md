@@ -39,7 +39,7 @@ Word-match example: `"butterflies"` or `"nice"` will hit the phrase `butterflies
 
 ## Location replacement
 
-Before filtering into adgroups, all locations are replaced with LOCATION. `IN` for Indiana is ignored, as it translates to `in`.
+Before filtering into adgroups, all locations are replaced with LOCATION. `IN` for Indiana is ignored, as it translates to `in`. Locations are replaced with word-match to improve performance.
 
 ## Resulting CSV data file
 
