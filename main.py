@@ -220,10 +220,6 @@ def replace_locations():
 
 
 
-
-
-
-
 def reload():
     load_from_csv(load_file, depth)
     replace_locations()
@@ -244,8 +240,6 @@ def save_searches():
         #     writer.writerow((" ".join(phrase), count))
         writer.writerows(phrase_counts)
 
-
-            
 
 
 def help_message():
