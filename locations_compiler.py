@@ -62,13 +62,15 @@ def is_ascii(s):
         return False
     return all(ord(c) < 128 for c in s)
 
+conflicts = ["in", "buy"]
+
 ascii_locations = []
 for l in locations:
     if is_ascii(l):
         ascii_locations.append(l.lower())
 
-        # Remove conflict with "in"
-        if ascii_locations[-1] == "in":
+        # Remove conflicts
+        if ascii_locations[-1] in conflicts:
             ascii_locations.pop()
 
 
