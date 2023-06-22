@@ -1,7 +1,7 @@
 import csv, json
 
 
-print("TODO: word-match")
+print("TODO: text-match")
 
 
 locations_file = "locations.json"
@@ -396,10 +396,10 @@ def user_interface():
 reload()
 load_adgroups()
 
-negative_keywords = []
+# negative_keywords = []
 
 for a in adgroups:
-    print(a)
+    # print(a)
 
     if len(a) < 2:
         continue
@@ -407,10 +407,29 @@ for a in adgroups:
     category = a[0]
     adgroup = a[1:]
 
+    skip = False
+    for term in adgroup:
+        if " " in term:
+            print(f"WARNING: text-match not yet implemented. Skipping '{term}'.")
+            skip = True
+            break
+    if skip:
+        continue
+
     if category == "NEGATIVE_KEYWORDS":
-        negative_keywords.append(adgroup)
+        keywords = ["!"+i for i in adgroup]
     else:
-        print(adgroup)
+        keywords = adgroup
+
+    print(keywords)
+    filter_by_keywords()
+    
+        # print(adgroup)
+    count_words()
+    find_display_words()
+    show_matches()
+
+    if category != "NEGATIVE_KEYWORDS":
         input()
 # print()
 # user_interface()
