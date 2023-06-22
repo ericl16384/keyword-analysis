@@ -19,7 +19,7 @@ import csv, json
 print("Loading locations")
 with open("locations.json", "r") as f:
     locations = f.read()
-locations = set(locations)
+locations = set(json.loads(locations))
 
 
 print("TODO: word-match")
@@ -56,8 +56,12 @@ def load_from_csv(filename, row_count):
     with open(filename, "r") as file:
         reader = csv.reader(file)
 
-        header = reader.__next__()
-        assert header == ['Keyword', 'Traffic', 'Exact KW', 'abortion', 'clinic', 'near', 'Campaign', 'Ad Group', 'Group']
+        # header = reader.__next__()
+        header_raw = file.readline().strip()
+        assert header_raw in (
+            "Keyword,Frequency",
+            "Keyword,Traffic,Exact KW,abortion,clinic,near,Campaign,Ad Group,Group"
+        )
 
         i = 0
         while i < row_count:
@@ -94,14 +98,6 @@ def load_from_csv(filename, row_count):
 
     print(f"Read {i} lines from '{filename}'")
     
-
-
-def replace_locations():
-    for phrase, count in phrase_counts:
-        words = phrase.split()
-        for start in range(words)
-        # triangle number of parts of the phrase
-        # start and end
 
 def filter_by_keywords():
     if len(keywords) == 0:
@@ -209,6 +205,19 @@ def add_keyword_from_display_words(rank, negate=False):
         print()
         show_matches()
 
+def replace_locations():
+    print("Replacing locations with LOCATION")
+    for i, phrase_count in enumerate(phrase_counts):
+        phrase, count = phrase_count
+        words = phrase.split()
+        for start in range(len(words)):
+            for end in range(start, len(words)):
+                p = " ".join(words[start:end+1])
+                if p in locations:
+                    words = words[:start] + ["LOCATION"] + words[end+1:]
+                    phrase_counts[i] = (" ".join(words), count)
+                    words = phrase_counts[i][0].split()
+
 
 
 
@@ -216,8 +225,8 @@ def add_keyword_from_display_words(rank, negate=False):
 
 
 def reload():
-    print(f"Loading from {load_file}")
     load_from_csv(load_file, depth)
+    replace_locations()
     filter_by_keywords()
     count_words()
     find_display_words()
@@ -282,10 +291,9 @@ def show_matches():
         print(line)
 
 
-
-
 reload()
 print()
+
 
 while True:
     print("For help, press ENTER")

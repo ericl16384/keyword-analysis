@@ -24,12 +24,21 @@ countries = set()
 countries_abb = set()
 #zipcodes
 
+# i = 0
 for c in cities_data:
-    cities.add(c["name"])
+    # print(json.dumps(c, indent=2))
+    # input()
+    # if c["population"] < 10**4:
+    #     continue
+    # i += 1
+
+    # cities.add(c["name"])
     cities.add(c["ascii_name"])
     if c["alternate_names"]:
         for n in c["alternate_names"]:
             cities.add(n)
+# print(i)
+# input()
 
 for abb, s in states_data.items():
     states.add(s)
@@ -56,7 +65,15 @@ def is_ascii(s):
 ascii_locations = []
 for l in locations:
     if is_ascii(l):
-        ascii_locations.append(l)
+        ascii_locations.append(l.lower())
+
+        # Remove conflict with "in"
+        if ascii_locations[-1] == "in":
+            ascii_locations.pop()
+
+
+
+
 
 print("dumping")
 out_text = json.dumps(ascii_locations, indent=2)
