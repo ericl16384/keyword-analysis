@@ -120,6 +120,13 @@ def load_adgroups():
             x += 1
         y += 1
 
+    while trace:
+        adgroup = []
+        for l in trace:
+            adgroup.append(l[2])
+        adgroups.append(adgroup)
+        trace.pop()
+
 
 def filter_by_keywords():
     if len(keywords) == 0:
@@ -387,7 +394,25 @@ def user_interface():
 
 
 reload()
-print()
-user_interface()
+load_adgroups()
+
+negative_keywords = []
+
+for a in adgroups:
+    print(a)
+
+    if len(a) < 2:
+        continue
+
+    category = a[0]
+    adgroup = a[1:]
+
+    if category == "NEGATIVE_KEYWORDS":
+        negative_keywords.append(adgroup)
+    else:
+        print(adgroup)
+        input()
+# print()
+# user_interface()
 
 
