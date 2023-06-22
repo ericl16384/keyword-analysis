@@ -106,6 +106,9 @@ def load_adgroups():
             item = line[x]
 
             if item:
+                if item != "LOCATION":
+                    item = item.lower()
+                    
                 current = (y, x, item)
 
                 while trace and current[1] <= trace[-1][1]:
