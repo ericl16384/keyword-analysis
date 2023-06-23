@@ -12,6 +12,18 @@ https://youtu.be/AOO_u33z7LE
 
 Please try each command. I am still working on implementing them, and some of them may just say "TODO." -->
 
+## Suggested workflow
+
+ - Download adgroups spreadsheet as CSV and place it in this folder
+ - Config
+  - Set the value of "adgroups_file" to the name of the CSV file
+ - Run the program
+  - Read the warnings
+  - Open the top remaining words file
+  - Update spreadsheet
+  - Close program
+ - Repeat
+
 ## Columns 
 
 Except for the fitst column, columns are processed as keyword information.
