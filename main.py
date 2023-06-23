@@ -428,17 +428,18 @@ def save_top_words():
 
     top_word_counts = []
     
-    while len(display_words) < number:
+    while len(top_word_counts) < number:
         max_count = 0
         max_word = None
 
-        for word, count in word_counts.items():
+        for word_count in word_counts.items():
+            if word_count in top_word_counts:
+                continue
+
+            word, count = word_count
             if count <= max_count:
                 continue
-            if word in keywords:
-                continue
-            if word in display_words:
-                continue
+
             max_count = count
             max_word = word
         
