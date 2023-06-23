@@ -1,5 +1,8 @@
 {
     "locations_file": "locations.json",
     "searches_file": "keywords.csv",
-    "adgroups_file": "adgroups_file.csv"
+    "adgroups_file": "adgroups_file.csv",
+    "output_file": "output.csv",
+
+    "replace with LOCATION": false
 }

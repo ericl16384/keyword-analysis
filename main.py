@@ -7,14 +7,16 @@ config_file = "config.json"
 # hashes_file = "hashes.json"
 
 def load_config():
-    global locations_file, searches_file, adgroups_file
+    global config
+    global locations_file, searches_file, adgroups_file, output_file
 
     with open(config_file, "r") as f:
-        c = json.loads(f.read())
+        config = json.loads(f.read())
 
-        locations_file = c["locations_file"]
-        searches_file = c["searches_file"]
-        adgroups_file = c["adgroups_file"]
+        locations_file = config["locations_file"]
+        searches_file = config["searches_file"]
+        adgroups_file = config["adgroups_file"]
+        output_file = config["output_file"]
 
 # def load_file_hashes():
 #     global file_hashes
@@ -286,8 +288,9 @@ def reload():
     # load_file_hashes()
 
     load_searches()
-    load_locations()
-    replace_locations()
+    if config["replace with LOCATION"]:
+        load_locations()
+        replace_locations()
     filter_by_keywords()
     count_words()
     find_display_words()
@@ -431,11 +434,11 @@ def user_interface():
 
 
 reload()
-save_overwrite_keywords()
 
-
-import sys
-sys.exit()
+# searches_file = "new_keywords.csv"
+# save_overwrite_keywords()
+# import sys
+# sys.exit()
 
 
 
