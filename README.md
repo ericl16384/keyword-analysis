@@ -12,12 +12,18 @@ https://youtu.be/AOO_u33z7LE
 
 Please try each command. I am still working on implementing them, and some of them may just say "TODO." -->
 
+## Installation instructions
+
+1. Download and install Python from https://www.python.org/downloads/
+2. Go to https://github.com/ericl16384/keyword-analysis/archive/refs/heads/main.zip to download
+3. Extract ZIP file
+
 ## Suggested workflow
 
  - Download adgroups spreadsheet as CSV and place it in this folder
  - Config
   - Set the value of "adgroups_file" to the name of the CSV file
- - Run the program
+ - Run `main.py`
   - Read the warnings
   - Open the top remaining words file
   - Update spreadsheet
