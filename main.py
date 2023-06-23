@@ -130,6 +130,17 @@ def load_adgroups():
         adgroups.append(adgroup)
         trace.pop()
 
+def save_overwrite_keywords():
+    print(f"Overwriting '{searches_file}'")
+
+    header = ["Keyword", "Frequency"]
+    with open(searches_file, "w", newline="") as f:
+        writer = csv.writer(f)
+        writer.writerow(header)
+        # for phrase, count in phrase_counts:
+        #     writer.writerow((" ".join(phrase), count))
+        writer.writerows(phrase_counts)
+
 
 def filter_by_keywords():
     if len(keywords) == 0:
@@ -397,6 +408,14 @@ def user_interface():
 
 
 reload()
+save_overwrite_keywords()
+
+
+import sys
+sys.exit()
+
+
+
 load_adgroups()
 
 # negative_keywords = []
@@ -426,9 +445,10 @@ for a in adgroups:
     # else:
     keywords = adgroup
 
+    print("phrase_counts:", len(phrase_counts))
     print(keywords)
     filter_by_keywords()
-    print(len(phrase_counts))
+    print("phrase_counts:", len(phrase_counts))
 
     unused_phrases = []
     old_index = 0
