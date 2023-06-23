@@ -1,4 +1,6 @@
-import csv, json
+import csv, json, time
+
+start_time = time.time()
 
 
 print("TODO: word-match")
@@ -515,6 +517,7 @@ if __name__ == "__main__":
         user_interface()
     
     print()
+    print(f"Elapsed time: {time.time()-start_time} seconds.")
     print("Program end. Press ENTER to exit.")
     input()
 
