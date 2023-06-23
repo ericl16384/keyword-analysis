@@ -1,9 +1,11 @@
 {
     "locations_file": "locations.json",
     "searches_file": "keywords.csv",
-    "adgroups_file": "adgroups_file.csv",
+    "adgroups_file": "adgroups.csv",
     "output_file": "output.csv",
+    "top_remaining_words_file": "top_remaining_words.csv",
 
     "filter using adgroups": true,
-    "replace with LOCATION": false
+    "replace with LOCATION": false,
+    "number of saved remaining words": 100
 }

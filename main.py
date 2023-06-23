@@ -198,6 +198,8 @@ def count_words():
     word_counts = {}
     total_hits = 0
 
+    print("Counting remaining words")
+
     # print(phrase_counts[0])
     for phrase, frequency in phrase_counts:
         count = int(frequency)
@@ -417,6 +419,39 @@ def user_interface():
             print(f"Unrecognized input: '{ans}'")
 
         print()
+    
+def save_top_words():
+    filename = config["top_remaining_words_file"]
+    number = config["number of saved remaining words"]
+
+    print(f"Finding top {number} words")
+
+    top_word_counts = []
+    
+    while len(display_words) < number:
+        max_count = 0
+        max_word = None
+
+        for word, count in word_counts.items():
+            if count <= max_count:
+                continue
+            if word in keywords:
+                continue
+            if word in display_words:
+                continue
+            max_count = count
+            max_word = word
+        
+        if max_word == None:
+            break
+
+        top_word_counts.append((max_word, max_count))
+    
+    print(f"Saving top remaining words to {filename}")
+    with open(filename, "w", newline="") as f:
+        writer = csv.writer(f)
+        writer.writerow(("Word", "Count"))
+        writer.writerows(top_word_counts)
 
 def filter_and_save_by_adgroups():
     global phrase_counts, keywords
@@ -496,6 +531,9 @@ def filter_and_save_by_adgroups():
         writer = csv.writer(f)
         writer.writerow(("Adgroup", "Phrase", "Count"))
         writer.writerows(output_rows)
+    
+    count_words()
+    save_top_words()
 
     print("Done saving")
 
