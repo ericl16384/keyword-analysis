@@ -52,12 +52,16 @@ Word-match example: `"butterflies"` or `"nice"` will hit the phrase `butterflies
 
 ## Location replacement
 
-Before filtering into adgroups, all locations are replaced with LOCATION. `IN` for Indiana is ignored, as it translates to `in`. Locations are replaced with word-match to improve performance.
+Before filtering into adgroups, all locations are replaced with LOCATION. Locations are replaced with word-match to improve performance. This is disabled by default in config.
 
 ## Resulting CSV data file
 
 For every adgroup, every search phrase will be listed as follows, in order of frequency:
 `[adgroup] [phrase] [frequency]`
+
+## Config
+
+See `config.json`. Rerun the program after editing and saving.
 
 ## Data sources
 
