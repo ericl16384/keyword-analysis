@@ -3,10 +3,29 @@ import csv, json
 
 print("TODO: text-match")
 
+config_file = "config.json"
+# hashes_file = "hashes.json"
 
-locations_file = "locations.json"
-searches_file = "keywords.csv"
-adgroups_file = "adgroups_file.csv"
+def load_config():
+    global locations_file, searches_file, adgroups_file
+
+    with open(config_file, "r") as f:
+        c = json.loads(f.read())
+
+        locations_file = c["locations_file"]
+        searches_file = c["searches_file"]
+        adgroups_file = c["adgroups_file"]
+
+# def load_file_hashes():
+#     global file_hashes
+
+#     with open(hashes_file, "r") as f:
+#         file_hashes = json.loads(f.read())
+
+
+# locations_file = "locations.json"
+# searches_file = "keywords.csv"
+# adgroups_file = "adgroups_file.csv"
 
 # depth = 10**9
 display_count = 30
@@ -263,6 +282,9 @@ def replace_locations():
 
 
 def reload():
+    load_config()
+    # load_file_hashes()
+
     load_searches()
     load_locations()
     replace_locations()
@@ -270,9 +292,10 @@ def reload():
     count_words()
     find_display_words()
 
-def save_searches():
-    filename = "SAVEFILE " + " ".join(keywords)
-    filename += ".csv"
+def save_searches(filename=None):
+    if not filename:
+        filename = "SAVEFILE " + " ".join(keywords)
+        filename += ".csv"
     print(f"Saving to '{filename}'")
 
     header = ["Keyword", "Frequency"]

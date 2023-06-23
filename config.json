@@ -1,0 +1,5 @@
+{
+    "locations_file": "locations.json",
+    "searches_file": "keywords.csv",
+    "adgroups_file": "adgroups_file.csv"
+}
