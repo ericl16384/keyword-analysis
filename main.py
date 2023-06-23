@@ -433,59 +433,51 @@ def user_interface():
 
         print()
 
-# def filter_and_save_by_adgroups():
-#     global phrase_counts
+def filter_and_save_by_adgroups():
+    global phrase_counts, keywords
 
-reload()
-load_adgroups()
+    for a in adgroups:
+        if len(a) < 2:
+            continue
 
+        category = a[0]
+        adgroup = a[1:]
 
-for a in adgroups:
-    if len(a) < 2:
-        continue
+        skip = False
+        for term in adgroup:
+            if " " in term:
+                print(f"WARNING: text-match not yet implemented. Skipping '{adgroup}'.")
+                skip = True
+                break
+        if skip:
+            continue
 
-    category = a[0]
-    adgroup = a[1:]
-
-    skip = False
-    for term in adgroup:
-        if " " in term:
-            print(f"WARNING: text-match not yet implemented. Skipping '{adgroup}'.")
-            skip = True
-            break
-    if skip:
-        continue
-
-    # print()
+        print()
 
 
-    old_phrases = phrase_counts.copy()
+        old_phrases = phrase_counts.copy()
 
-    keywords = adgroup
+        keywords = adgroup
 
-    print("phrase_counts:", len(phrase_counts))
-    print(keywords)
-    filter_by_keywords()
-    print("phrase_counts:", len(phrase_counts))
+        print("phrase_counts:", len(phrase_counts))
+        print(keywords)
+        filter_by_keywords()
+        print("phrase_counts:", len(phrase_counts))
 
-    # save_searches()
+        # save_searches()
 
-    unused_phrases = []
-    i = 0
+        unused_phrases = []
+        i = 0
 
-    for phrase in old_phrases:
-        # while old_phrases[i] != phrase:
-        if i >= len(phrase_counts) or phrase != phrase_counts[i]:
-            unused_phrases.append(phrase)
-        else:
-            i += 1
-    
-    phrase_counts = unused_phrases
-    print("phrase_counts:", len(phrase_counts))
-    print(len(old_phrases))
-    print(len(unused_phrases))
+        for phrase in old_phrases:
+            if i >= len(phrase_counts) or phrase != phrase_counts[i]:
+                unused_phrases.append(phrase)
+            else:
+                i += 1
+        
+        phrase_counts = unused_phrases
 
-    input()
+        input()
 
 
 
