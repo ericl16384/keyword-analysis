@@ -4,5 +4,6 @@
     "adgroups_file": "adgroups_file.csv",
     "output_file": "output.csv",
 
+    "filter using adgroups": false,
     "replace with LOCATION": false
 }

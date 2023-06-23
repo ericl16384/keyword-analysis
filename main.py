@@ -371,6 +371,7 @@ def user_interface():
                           __/ |          
                          |___/           
 """)
+    print()
     
     while True:
         print("For help, press ENTER")
@@ -435,6 +436,11 @@ def user_interface():
 
 reload()
 
+if config["filter using adgroups"]:
+    pass
+else:
+    user_interface()
+
 # searches_file = "new_keywords.csv"
 # save_overwrite_keywords()
 # import sys
@@ -491,6 +497,7 @@ for a in adgroups:
 
         print(new_index, new_phrase)
         print(old_index, old_phrase)
+        print()
 
         if old_phrase == new_phrase:
             unused_phrases.append(phrase_counts[old_index])
@@ -498,14 +505,16 @@ for a in adgroups:
             new_index += 1
         old_index += 1
 
-        input()
+        # input()
     
     if len(phrase_counts) == 0:
         unused_phrases = old_phrases
 
     
     print("finished", adgroup)
-    input()
+
+    if category != "NEGATIVE_KEYWORDS"        or True:
+        input()
 
     phrase_counts = unused_phrases
 
