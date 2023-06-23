@@ -7,11 +7,14 @@ with open("cities_dense.json", "r") as f:
     cities_text = f.read()
 with open("states.json", "r") as f:
     states_text = f.read()
+with open("short_words.json", "r") as f:
+    conflicts_text = f.read()
 
 print("loading")
 cities_data = json.loads(cities_text)
 countries_data = json.loads(countries_text)
 states_data = json.loads(states_text)
+conflicts = json.loads(conflicts_text)
 
 print("organization")
 
@@ -61,8 +64,6 @@ def is_ascii(s):
     if not s:
         return False
     return all(ord(c) < 128 for c in s)
-
-conflicts = ["in", "buy"]
 
 ascii_locations = []
 for l in locations:
