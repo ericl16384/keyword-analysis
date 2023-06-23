@@ -14,7 +14,7 @@ Please try each command. I am still working on implementing them, and some of th
 
 ## Columns 
 
-The first column is the data type or is for human organization. `NEGATIVE_KEYWORDS` is a specially handled section. All other first column entries are ignored. In the normal case, the next columns are processed as keyword information.
+Except for the fitst column, columns are processed as keyword information.
 
 ## Search order
 

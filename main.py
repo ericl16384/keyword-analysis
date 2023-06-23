@@ -452,8 +452,6 @@ load_adgroups()
 
 # negative_keywords = []
 
-old_phrases = phrase_counts
-
 for a in adgroups:
     # print(a)
 
@@ -466,7 +464,7 @@ for a in adgroups:
     skip = False
     for term in adgroup:
         if " " in term:
-            print(f"WARNING: text-match not yet implemented. Skipping '{term}'.")
+            print(f"WARNING: text-match not yet implemented. Skipping '{adgroup}'.")
             skip = True
             break
     if skip:
@@ -475,6 +473,16 @@ for a in adgroups:
     # if category == "NEGATIVE_KEYWORDS":
     #     keywords = ["!"+i for i in adgroup]
     # else:
+
+
+
+    # adgroup = ["stricture"]
+    print()
+    # print(adgroup)
+
+
+    old_phrases = phrase_counts
+
     keywords = adgroup
 
     print("phrase_counts:", len(phrase_counts))
@@ -482,41 +490,64 @@ for a in adgroups:
     filter_by_keywords()
     print("phrase_counts:", len(phrase_counts))
 
+    save_searches()
+
     unused_phrases = []
-    old_index = 0
-    new_index = 0
-    while old_index < len(old_phrases) and new_index < len(phrase_counts):
-    # for i, phrase_count in enumerate(old_phrases):
-        # if 
-        # phrase, count = phrase_count
-        # print(i, phrase)
-        # input()
+    i = 0
 
-        new_phrase = phrase_counts[new_index][0]
-        old_phrase = old_phrases[old_index][0]
-
-        print(new_index, new_phrase)
-        print(old_index, old_phrase)
-        print()
-
-        if old_phrase == new_phrase:
-            unused_phrases.append(phrase_counts[old_index])
+    for phrase in old_phrases:
+        # while old_phrases[i] != phrase:
+        if i >= len(phrase_counts) or phrase != phrase_counts[i]:
+            unused_phrases.append(phrase)
         else:
-            new_index += 1
-        old_index += 1
-
-        # input()
+            i += 1
     
-    if len(phrase_counts) == 0:
-        unused_phrases = old_phrases
-
-    
-    print("finished", adgroup)
-
-    if category != "NEGATIVE_KEYWORDS"        or True:
-        input()
-
     phrase_counts = unused_phrases
+    
+    
+
+
+    # print(category)
+    # if category != "negative_keywords":
+    #     input()
+
+
+
+    # unused_phrases = []
+    # old_index = 0
+    # new_index = 0
+    # while old_index < len(old_phrases) and new_index < len(phrase_counts):
+    # # for i, phrase_count in enumerate(old_phrases):
+    #     # if 
+    #     # phrase, count = phrase_count
+    #     # print(i, phrase)
+    #     # input()
+
+    #     new_phrase = phrase_counts[new_index][0]
+    #     old_phrase = old_phrases[old_index][0]
+
+    #     print(new_index, new_phrase)
+    #     print(old_index, old_phrase)
+    #     print()
+
+    #     if old_phrase == new_phrase:
+    #         unused_phrases.append(phrase_counts[old_index])
+    #     else:
+    #         new_index += 1
+    #     old_index += 1
+
+    #     # input()
+    
+    # if len(phrase_counts) == 0:
+    #     unused_phrases = old_phrases
+
+    
+    # print("finished", adgroup)
+
+    # if category != "NEGATIVE_KEYWORDS"        or True:
+    #     input()
+
+    # phrase_counts = unused_phrases
 
 
 
