@@ -46,7 +46,7 @@ Word-match example: `"butterflies"` or `"nice"` will hit the phrase `butterflies
 
  - No capitalization was found in keywords.csv, so capitalization is ignored.
  - By default, keywords are searched by text-match, not word match. To search by word-match, place `"` quotation marks (not `“` or `”`) around the entire entry. Variations from this should raise an error.
-   - IMPORTANT: This is not yet implemented. It currently searches by word match only.
+   - IMPORTANT: This is not yet implemented. It currently searches by text-match only.
  <!-- - Due to the word-match policy, entries with a space included must have quotation marks around them. -->
  <!-- - All keywords must be in separate columns, or they will be interpreted as text match. -->
 

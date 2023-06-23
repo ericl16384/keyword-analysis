@@ -1,10 +1,9 @@
 import csv, json
 
 
-print("TODO: text-match")
+print("TODO: word-match")
 
 config_file = "config.json"
-# hashes_file = "hashes.json"
 
 def load_config():
     global config
@@ -18,18 +17,7 @@ def load_config():
         adgroups_file = config["adgroups_file"]
         output_file = config["output_file"]
 
-# def load_file_hashes():
-#     global file_hashes
 
-#     with open(hashes_file, "r") as f:
-#         file_hashes = json.loads(f.read())
-
-
-# locations_file = "locations.json"
-# searches_file = "keywords.csv"
-# adgroups_file = "adgroups_file.csv"
-
-# depth = 10**9
 display_count = 30
 keywords = []
 
@@ -45,12 +33,7 @@ def load_searches():
     print(f"Loading from {searches_file}")
 
     global phrase_counts, keywords, whole_file_read
-    #, phrases_sorted, phrase_frequencies, word_frequencies
     phrase_counts = []
-    # keywords = []
-    # phrases_sorted = []
-    # phrase_frequencies = {}
-    # word_frequencies = {}
 
     whole_file_read = False
 
@@ -437,6 +420,7 @@ def filter_and_save_by_adgroups():
     global phrase_counts, keywords
 
     output_rows = []
+    warnings = []
 
     for a in adgroups:
         if len(a) < 2:
@@ -445,14 +429,16 @@ def filter_and_save_by_adgroups():
         category = a[0]
         adgroup = a[1:]
 
-        skip = False
-        for term in adgroup:
-            if " " in term:
-                print(f"WARNING: text-match not yet implemented. Skipping '{adgroup}'.")
-                skip = True
-                break
-        if skip:
-            continue
+        # skip = False
+        # for term in adgroup:
+        #     if " " in term:
+        #         print(f"WARNING: text-match not yet implemented. Skipping '{adgroup}'.")
+        #         skip = True
+        #         break
+        # if skip:
+        #     continue
+
+        # TODO word-match
 
         # print()
 
@@ -484,9 +470,11 @@ def filter_and_save_by_adgroups():
                 i += 1
 
         print(f"Adgroup: {adgroup}")
-        print(f"Hits: {len(phrase_counts)}")
+        print(f"Searches: {len(phrase_counts)}")
         print(f"Remaining: {len(unused_phrases)}")
         print()
+        if not phrase_counts:
+            warnings.append(f"WARNING: no matching searches in adgroup {adgroup}")
         
         phrase_counts = unused_phrases
 
@@ -508,6 +496,11 @@ def filter_and_save_by_adgroups():
         writer.writerows(output_rows)
 
     print("Done saving")
+
+    if len(warnings):
+        print()
+    for w in warnings:
+        print(w)
 
 
 
