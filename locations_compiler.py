@@ -58,7 +58,7 @@ locations.update(state_abbr)
 locations.update(countries)
 locations.update(countries_abb)
 
-print("filtering for ascii")
+print("filtering for ascii and conflicts")
 
 def is_ascii(s):
     if not s:
@@ -68,6 +68,7 @@ def is_ascii(s):
 ascii_locations = []
 for l in locations:
     if is_ascii(l):
+        l = l.lower()
         # Remove conflicts
         if l not in conflicts:
             ascii_locations.append(l.lower())
