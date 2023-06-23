@@ -433,135 +433,67 @@ def user_interface():
 
         print()
 
+def filter_and_save_by_adgroups():
+    global phrase_counts
 
-reload()
+    for a in adgroups:
+        if len(a) < 2:
+            continue
 
-if config["filter using adgroups"]:
-    pass
-else:
-    user_interface()
+        category = a[0]
+        adgroup = a[1:]
 
-# searches_file = "new_keywords.csv"
-# save_overwrite_keywords()
-# import sys
-# sys.exit()
+        skip = False
+        for term in adgroup:
+            if " " in term:
+                print(f"WARNING: text-match not yet implemented. Skipping '{adgroup}'.")
+                skip = True
+                break
+        if skip:
+            continue
 
-
-
-load_adgroups()
-
-# negative_keywords = []
-
-for a in adgroups:
-    # print(a)
-
-    if len(a) < 2:
-        continue
-
-    category = a[0]
-    adgroup = a[1:]
-
-    skip = False
-    for term in adgroup:
-        if " " in term:
-            print(f"WARNING: text-match not yet implemented. Skipping '{adgroup}'.")
-            skip = True
-            break
-    if skip:
-        continue
-
-    # if category == "NEGATIVE_KEYWORDS":
-    #     keywords = ["!"+i for i in adgroup]
-    # else:
+        # print()
 
 
+        old_phrases = phrase_counts.copy()
 
-    # adgroup = ["stricture"]
-    print()
-    # print(adgroup)
+        keywords = adgroup
 
+        print("phrase_counts:", len(phrase_counts))
+        print(keywords)
+        filter_by_keywords()
+        print("phrase_counts:", len(phrase_counts))
 
-    old_phrases = phrase_counts
+        # save_searches()
 
-    keywords = adgroup
+        unused_phrases = []
+        i = 0
 
-    print("phrase_counts:", len(phrase_counts))
-    print(keywords)
-    filter_by_keywords()
-    print("phrase_counts:", len(phrase_counts))
+        for phrase in old_phrases:
+            # while old_phrases[i] != phrase:
+            if i >= len(phrase_counts) or phrase != phrase_counts[i]:
+                unused_phrases.append(phrase)
+            else:
+                i += 1
+        
+        phrase_counts = unused_phrases
+        print("phrase_counts:", len(phrase_counts))
+        print(len(old_phrases))
+        print(len(unused_phrases))
 
-    save_searches()
-
-    unused_phrases = []
-    i = 0
-
-    for phrase in old_phrases:
-        # while old_phrases[i] != phrase:
-        if i >= len(phrase_counts) or phrase != phrase_counts[i]:
-            unused_phrases.append(phrase)
-        else:
-            i += 1
-    
-    phrase_counts = unused_phrases
-    
-    
-
-
-    # print(category)
-    # if category != "negative_keywords":
-    #     input()
-
-
-
-    # unused_phrases = []
-    # old_index = 0
-    # new_index = 0
-    # while old_index < len(old_phrases) and new_index < len(phrase_counts):
-    # # for i, phrase_count in enumerate(old_phrases):
-    #     # if 
-    #     # phrase, count = phrase_count
-    #     # print(i, phrase)
-    #     # input()
-
-    #     new_phrase = phrase_counts[new_index][0]
-    #     old_phrase = old_phrases[old_index][0]
-
-    #     print(new_index, new_phrase)
-    #     print(old_index, old_phrase)
-    #     print()
-
-    #     if old_phrase == new_phrase:
-    #         unused_phrases.append(phrase_counts[old_index])
-    #     else:
-    #         new_index += 1
-    #     old_index += 1
-
-    #     # input()
-    
-    # if len(phrase_counts) == 0:
-    #     unused_phrases = old_phrases
-
-    
-    # print("finished", adgroup)
-
-    # if category != "NEGATIVE_KEYWORDS"        or True:
-    #     input()
-
-    # phrase_counts = unused_phrases
+        input()
 
 
 
 
-    # input()
-    
-        # print(adgroup)
-    # count_words()
-    # find_display_words()
-    # show_matches()
+if __name__ == "__main__":
+    reload()
 
-    # if category != "NEGATIVE_KEYWORDS":
-    #     input()
-# print()
-# user_interface()
+    if config["filter using adgroups"]:
+        load_adgroups()
+        filter_and_save_by_adgroups()
+    else:
+        user_interface()
 
 
+        
