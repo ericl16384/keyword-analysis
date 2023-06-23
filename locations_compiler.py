@@ -68,11 +68,9 @@ def is_ascii(s):
 ascii_locations = []
 for l in locations:
     if is_ascii(l):
-        ascii_locations.append(l.lower())
-
         # Remove conflicts
-        if ascii_locations[-1] in conflicts:
-            ascii_locations.pop()
+        if l not in conflicts:
+            ascii_locations.append(l.lower())
 
 
 
