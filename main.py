@@ -426,6 +426,7 @@ def save_top_words():
 
     print(f"Finding top {number} words")
 
+    top_words_set = set()
     top_word_counts = []
     
     while len(top_word_counts) < number:
@@ -433,10 +434,13 @@ def save_top_words():
         max_word = None
 
         for word_count in word_counts.items():
-            if word_count in top_word_counts:
+            word, count = word_count
+            
+            # if word_count in top_word_counts:
+            #     continue
+            if word in top_words_set:
                 continue
 
-            word, count = word_count
             if count <= max_count:
                 continue
 
@@ -446,6 +450,7 @@ def save_top_words():
         if max_word == None:
             break
 
+        top_words_set.add(word)
         top_word_counts.append((max_word, max_count))
     
     print(f"Saving top remaining words to {filename}")
