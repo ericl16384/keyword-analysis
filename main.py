@@ -436,6 +436,8 @@ def user_interface():
 def filter_and_save_by_adgroups():
     global phrase_counts, keywords
 
+    output_rows = []
+
     for a in adgroups:
         if len(a) < 2:
             continue
@@ -452,19 +454,25 @@ def filter_and_save_by_adgroups():
         if skip:
             continue
 
-        print()
+        # print()
 
 
         old_phrases = phrase_counts.copy()
 
         keywords = adgroup
 
-        print("phrase_counts:", len(phrase_counts))
-        print(keywords)
+        # print("phrase_counts:", len(phrase_counts))
+        # print(keywords)
         filter_by_keywords()
-        print("phrase_counts:", len(phrase_counts))
+        # print("phrase_counts:", len(phrase_counts))
 
         # save_searches()
+        for phrase, count, in phrase_counts:
+            output_rows.append((
+                " ".join(adgroup),
+                phrase,
+                count
+            ))
 
         unused_phrases = []
         i = 0
@@ -474,10 +482,32 @@ def filter_and_save_by_adgroups():
                 unused_phrases.append(phrase)
             else:
                 i += 1
+
+        print(f"Adgroup: {adgroup}")
+        print(f"Hits: {len(phrase_counts)}")
+        print(f"Remaining: {len(unused_phrases)}")
+        print()
         
         phrase_counts = unused_phrases
 
-        input()
+        # input()
+    
+    print("Storing remaining phrases")
+    adgroup = ["REMAINING_PHRASES"]
+    for phrase, count, in phrase_counts:
+        output_rows.append((
+            " ".join(adgroup),
+            phrase,
+            count
+        ))
+    
+    print(f"Saving adgroups to {output_file}")
+    with open(output_file, "w", newline="") as f:
+        writer = csv.writer(f)
+        writer.writerow(("Adgroup", "Phrase", "Count"))
+        writer.writerows(output_rows)
+
+    print("Done saving")
 
 
 
@@ -490,6 +520,10 @@ if __name__ == "__main__":
         filter_and_save_by_adgroups()
     else:
         user_interface()
+    
+    print()
+    print("Program end. Press ENTER to exit.")
+    input()
 
 
         

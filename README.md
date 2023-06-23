@@ -57,7 +57,7 @@ Before filtering into adgroups, all locations are replaced with LOCATION. `IN` f
 ## Resulting CSV data file
 
 For every adgroup, every search phrase will be listed as follows, in order of frequency:
-`[template] [phrase] [frequency]`
+`[adgroup] [phrase] [frequency]`
 
 ## Data sources
 
