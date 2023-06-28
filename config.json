@@ -7,5 +7,5 @@
 
     "filter using adgroups": true,
     "replace with LOCATION": false,
-    "number of saved remaining words": 1000
+    "number of saved remaining words": 100
 }

@@ -451,8 +451,11 @@ def save_top_words():
         if max_word == None:
             break
 
-        top_words_set.add(word)
+        top_words_set.add(max_word)
         top_word_counts.append((max_word, max_count))
+
+        # print(top_words_set)
+        # input()
     
     print(f"Saving top remaining words to {filename}")
     with open(filename, "w", newline="") as f:
@@ -543,6 +546,8 @@ def filter_and_save_by_adgroups():
         print()
     for w in warnings:
         print(w)
+
+    print()
     
     count_words()
     save_top_words()
