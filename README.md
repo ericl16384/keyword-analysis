@@ -22,12 +22,12 @@ Please try each command. I am still working on implementing them, and some of th
 
  - Download adgroups spreadsheet as CSV and place it in this folder
  - Config
-  - Set the value of "adgroups_file" to the name of the CSV file
+   - Set the value of "adgroups_file" to the name of the CSV file
  - Run `main.py`
-  - Read the warnings
-  - Open the top remaining words file
-  - Update spreadsheet
-  - Close program
+   - Read the warnings
+   - Open the top remaining words file
+   - Update spreadsheet
+   - Close program
  - Repeat
 
 ## Columns 
