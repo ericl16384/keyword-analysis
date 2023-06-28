@@ -18,7 +18,6 @@ def load_config():
         output_file = config["output_file"]
 
 
-display_count = 30
 keywords = []
 
 
@@ -281,7 +280,6 @@ def reload():
         replace_locations()
     filter_by_keywords()
     count_words()
-    find_display_words()
 
 def save_searches(filename=None):
     if not filename:
@@ -313,6 +311,8 @@ def help_message():
     print("  [ to clear working keywords")
 
 def show_matches():
+    find_display_words()
+
     if len(display_words) == 0:
         print("No new words found using current keywords")
 
@@ -343,6 +343,9 @@ def show_matches():
 
 def user_interface():
     global keywords
+
+    global display_count
+    display_count = 30
 
     print(r"""
   _  __                                _ 
@@ -558,19 +561,18 @@ def filter_and_save_by_adgroups():
 
 
 if __name__ == "__main__":
-    while True:
-        reload()
+    reload()
 
-        if config["filter using adgroups"]:
-            load_adgroups()
-            filter_and_save_by_adgroups()
-        else:
-            user_interface()
-        
-        print()
-        print(f"Elapsed time: {time.time()-start_time} seconds.")
-        print("Program end. Press ENTER to reload.")
-        input()
+    if config["filter using adgroups"]:
+        load_adgroups()
+        filter_and_save_by_adgroups()
+    else:
+        user_interface()
+    
+    print()
+    print(f"Elapsed time: {time.time()-start_time} seconds.")
+    print("Program end. Press ENTER to exit.")
+    input()
 
 
         
