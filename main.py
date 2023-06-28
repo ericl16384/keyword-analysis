@@ -1,7 +1,5 @@
 import csv, json, time
 
-start_time = time.time()
-
 
 print("TODO: word-match")
 
@@ -271,6 +269,9 @@ def replace_locations():
 
 
 def reload():
+    global start_time
+    start_time = time.time()
+
     load_config()
     # load_file_hashes()
 
@@ -537,33 +538,34 @@ def filter_and_save_by_adgroups():
         writer = csv.writer(f)
         writer.writerow(("Adgroup", "Phrase", "Count"))
         writer.writerows(output_rows)
+
+    if len(warnings):
+        print()
+    for w in warnings:
+        print(w)
     
     count_words()
     save_top_words()
 
     print("Done saving")
 
-    if len(warnings):
-        print()
-    for w in warnings:
-        print(w)
-
 
 
 
 if __name__ == "__main__":
-    reload()
+    while True:
+        reload()
 
-    if config["filter using adgroups"]:
-        load_adgroups()
-        filter_and_save_by_adgroups()
-    else:
-        user_interface()
-    
-    print()
-    print(f"Elapsed time: {time.time()-start_time} seconds.")
-    print("Program end. Press ENTER to exit.")
-    input()
+        if config["filter using adgroups"]:
+            load_adgroups()
+            filter_and_save_by_adgroups()
+        else:
+            user_interface()
+        
+        print()
+        print(f"Elapsed time: {time.time()-start_time} seconds.")
+        print("Program end. Press ENTER to reload.")
+        input()
 
 
         
