@@ -1,6 +1,10 @@
 import csv, json, time
 
 
+OR = "||"
+AND = "&&"
+
+
 print("TODO: word-match")
 
 config_file = "config.json"
@@ -97,14 +101,22 @@ def load_adgroups():
             except StopIteration:
                 more_lines = False
 
+    ignored_rows = config["ignored first adgroup rows"]
+    ignored_columns = config["ignored first adgroup columns"]
+
+    assert ignored_rows >= 0
+    assert ignored_columns >= 0
+
     adgroups = []
     trace = []
-    y = 0
+    logic_trace = []
+
+    y = ignored_rows
 
     while y < len(lines):
         line = lines[y]
 
-        x = 0
+        x = ignored_columns
         while x < len(line):
             item = line[x]
 
@@ -118,10 +130,26 @@ def load_adgroups():
                     adgroup = []
                     for l in trace:
                         adgroup.append(l[2])
+
+                    print(adgroup)
+                    print(logic_trace)
+                    input()
+
                     adgroups.append(adgroup)
-                    trace.pop()
+                    
+                    if logic_trace[-1] == AND:
+                        trace.pop()
+                    else:
+                        break
 
                 trace.append(current)
+
+                if len(trace) > 1:
+                    if trace[-1][0] == trace[-2][0]:
+                        logic_trace.append(OR)
+                    else:
+                        logic_trace.append(AND)
+
             
             x += 1
         y += 1
@@ -132,6 +160,10 @@ def load_adgroups():
             adgroup.append(l[2])
         adgroups.append(adgroup)
         trace.pop()
+    
+    for i, a in enumerate(adgroups):
+        print(a)
+        input()
 
 def save_overwrite_keywords():
     print(f"Overwriting '{searches_file}'")
@@ -476,8 +508,7 @@ def filter_and_save_by_adgroups():
         if len(a) < 2:
             continue
 
-        category = a[0]
-        adgroup = a[1:]
+        adgroup = a
 
         # skip = False
         # for term in adgroup:
