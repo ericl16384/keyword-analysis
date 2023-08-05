@@ -470,7 +470,7 @@ def filter_and_save_by_adgroups():
     global phrase_counts, keywords
 
     output_rows = []
-    warnings = []
+    unused_adgroups = []
 
     for a in adgroups:
         if len(a) < 2:
@@ -524,7 +524,7 @@ def filter_and_save_by_adgroups():
         print(f"Remaining: {len(unused_phrases)}")
         print()
         if not phrase_counts:
-            warnings.append(f"WARNING: no matching searches in adgroup {adgroup}")
+            unused_adgroups.append(adgroup)
         
         phrase_counts = unused_phrases
 
@@ -545,10 +545,11 @@ def filter_and_save_by_adgroups():
         writer.writerow(("Adgroup", "Phrase", "Count"))
         writer.writerows(output_rows)
 
-    if len(warnings):
+    if len(unused_adgroups):
         print()
-    for w in warnings:
-        print(w)
+        print("The following adgroups did not result in any matches. Please check their ordering and spelling.")
+        for w in unused_adgroups:
+            print(f"  {w}")
 
     print()
     
