@@ -564,6 +564,8 @@ def filter_and_save_by_adgroups():
 if __name__ == "__main__":
     reload()
 
+    print()
+
     if config["filter using adgroups"]:
         load_adgroups()
         filter_and_save_by_adgroups()
