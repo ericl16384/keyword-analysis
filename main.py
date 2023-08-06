@@ -352,6 +352,21 @@ def replace_locations():
                     phrase_counts[i] = (" ".join(words), count)
                     words = phrase_counts[i][0].split()
 
+def adgroup_to_string(adgroup):
+    if adgroups_rows_are_synonyms:
+        rows = []
+        for row in adgroup:
+            text = OR_symbol.join(row)
+            if len(row) > 1 and len(adgroup) > 1:
+                text = f"({text})"
+            rows.append(text)
+        adgroup_text = AND_symbol.join(rows)
+        
+    else:
+        adgroup_text = AND_symbol.join(adgroup)
+    
+    return adgroup_text
+
 
 def reload():
     global start_time
@@ -552,97 +567,98 @@ def save_top_words():
         writer.writerow(("Word", "Count"))
         writer.writerows(top_word_counts)
 
-def filter_and_save_by_adgroups():
-    global phrase_counts, keywords
+# def filter_and_save_by_adgroups():
+#     global phrase_counts, keywords
 
-    output_rows = []
-    unused_adgroups = []
+#     output_rows = []
+#     unused_adgroups = []
 
-    for adgroup in adgroups:
-        if len(adgroup) < 2:
-            continue
+#     for adgroup in adgroups:
+#         if len(adgroup) < 2:
+#             continue
             
-        print(adgroup)
-        input()
+#         print(adgroup)
+#         input()
 
-        # skip = False
-        # for term in adgroup:
-        #     if " " in term:
-        #         print(f"WARNING: text-match not yet implemented. Skipping '{adgroup}'.")
-        #         skip = True
-        #         break
-        # if skip:
-        #     continue
+#         # skip = False
+#         # for term in adgroup:
+#         #     if " " in term:
+#         #         print(f"WARNING: text-match not yet implemented. Skipping '{adgroup}'.")
+#         #         skip = True
+#         #         break
+#         # if skip:
+#         #     continue
 
-        # TODO word-match
+#         # TODO word-match
 
-        # print()
+#         # print()
 
 
-        old_phrases = phrase_counts.copy()
+#         old_phrases = phrase_counts.copy()
 
-        keywords = adgroup
+#         keywords = adgroup
 
-        # print("phrase_counts:", len(phrase_counts))
-        # print(keywords)
-        filter_by_keywords()
-        # print("phrase_counts:", len(phrase_counts))
+#         # print("phrase_counts:", len(phrase_counts))
+#         # print(keywords)
+#         filter_by_keywords()
+#         # print("phrase_counts:", len(phrase_counts))
 
-        # save_searches()
-        for phrase, count, in phrase_counts:
-            output_rows.append((
-                " ".join(adgroup),
-                phrase,
-                count
-            ))
+#         # save_searches()
+#         for phrase, count, in phrase_counts:
+#             output_rows.append((
+#                 " ".join(adgroup),
+#                 phrase,
+#                 count
+#             ))
 
-        unused_phrases = []
-        i = 0
+#         unused_phrases = []
+#         i = 0
 
-        for phrase in old_phrases:
-            if i >= len(phrase_counts) or phrase != phrase_counts[i]:
-                unused_phrases.append(phrase)
-            else:
-                i += 1
+#         for phrase in old_phrases:
+#             if i >= len(phrase_counts) or phrase != phrase_counts[i]:
+#                 unused_phrases.append(phrase)
+#             else:
+#                 i += 1
 
-        print(f"Adgroup: {adgroup}")
-        print(f"Searches: {len(phrase_counts)}")
-        print(f"Remaining: {len(unused_phrases)}")
-        print()
-        if not phrase_counts:
-            unused_adgroups.append(adgroup)
+#         # print(f"Adgroup: {adgroup}")
+#         # print(f"Searches: {len(phrase_counts)}")
+#         # print(f"Remaining: {len(unused_phrases)}")
+#         print(f"{len(phrase_counts)}/{len(unused_phrases)} \"{adgroup_to_string(adgroup)}\"")
+#         print()
+#         if not phrase_counts:
+#             unused_adgroups.append(adgroup)
         
-        phrase_counts = unused_phrases
+#         phrase_counts = unused_phrases
 
-        # input()
+#         # input()
     
-    print("Storing remaining phrases")
-    adgroup = ["REMAINING_PHRASES"]
-    for phrase, count, in phrase_counts:
-        output_rows.append((
-            " ".join(adgroup),
-            phrase,
-            count
-        ))
+#     print("Storing remaining phrases")
+#     adgroup = ["REMAINING_PHRASES"]
+#     for phrase, count, in phrase_counts:
+#         output_rows.append((
+#             " ".join(adgroup),
+#             phrase,
+#             count
+#         ))
     
-    print(f"Saving adgroups to {output_file}")
-    with open(output_file, "w", newline="") as f:
-        writer = csv.writer(f)
-        writer.writerow(("Adgroup", "Phrase", "Count"))
-        writer.writerows(output_rows)
+#     print(f"Saving adgroups to {output_file}")
+#     with open(output_file, "w", newline="") as f:
+#         writer = csv.writer(f)
+#         writer.writerow(("Adgroup", "Phrase", "Count"))
+#         writer.writerows(output_rows)
 
-    if len(unused_adgroups):
-        print()
-        print("The following adgroups did not result in any matches. Please check their ordering and spelling.")
-        for w in unused_adgroups:
-            print(f"  {w}")
+#     if len(unused_adgroups):
+#         print()
+#         print("The following adgroups did not result in any matches. Please check their ordering and spelling.")
+#         for w in unused_adgroups:
+#             print(f"  {w}")
 
-    print()
+#     print()
     
-    count_words()
-    save_top_words()
+#     count_words()
+#     save_top_words()
 
-    print("Done saving")
+#     print("Done saving")
 
 def filter_and_save_by_adgroups():
     global phrase_counts, keywords
@@ -676,24 +692,14 @@ def filter_and_save_by_adgroups():
         for k in adgroup:
             keywords = k
             filter_by_keywords(treat_as_AND=False)
-
-        if adgroups_rows_are_synonyms:
-            rows = []
-            for row in adgroup:
-                text = OR_symbol.join(row)
-                if len(row) > 1 and len(adgroup) > 1:
-                    text = f"({text})"
-                rows.append(text)
-            adgroup_text = AND_symbol.join(rows)
-            
-        else:
-            adgroup_text = AND_symbol.join(adgroup)
         
-        print(adgroup)
-        print(adgroup_text)
-        for x in phrase_counts[:30]:
-            print(x)
-        input()
+        adgroup_text = adgroup_to_string(adgroup)
+        
+        # print(adgroup)
+        # print(adgroup_text)
+        # for x in phrase_counts[:30]:
+        #     print(x)
+        # input()
 
         # save_searches()
         for phrase, count, in phrase_counts:
@@ -712,10 +718,8 @@ def filter_and_save_by_adgroups():
             else:
                 i += 1
 
-        print(f"Adgroup: {adgroup}")
-        print(f"Searches: {len(phrase_counts)}")
-        print(f"Remaining: {len(unused_phrases)}")
-        print()
+        print(f"\"{adgroup_to_string(adgroup)}\"    {len(phrase_counts)}/{len(unused_phrases)}")
+        # print()
         if not phrase_counts:
             unused_adgroups.append(adgroup)
         
@@ -742,7 +746,10 @@ def filter_and_save_by_adgroups():
         print()
         print("The following adgroups did not result in any matches. Please check their ordering and spelling.")
         for w in unused_adgroups:
-            print(f"  {w}")
+            print(f"  {adgroup_to_string(w)}")
+    
+    print()
+    print(f"{len(unused_phrases)} phrases were not categorized.")
 
     print()
     
