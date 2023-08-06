@@ -1,10 +1,6 @@
 import csv, json, time
 
 
-OR = "||"
-AND = "&&"
-
-
 print("TODO: word-match")
 
 config_file = "config.json"
@@ -12,6 +8,7 @@ config_file = "config.json"
 def load_config():
     global config
     global locations_file, searches_file, adgroups_file, output_file
+    global adgroups_ignored_rows, adgroups_ignored_columns, adgroups_rows_are_synonyms
 
     with open(config_file, "r") as f:
         config = json.loads(f.read())
@@ -20,6 +17,10 @@ def load_config():
         searches_file = config["searches_file"]
         adgroups_file = config["adgroups_file"]
         output_file = config["output_file"]
+
+        adgroups_ignored_rows = config["ignored first adgroup rows"]
+        adgroups_ignored_columns = config["ignored first adgroup columns"]
+        adgroups_rows_are_synonyms = config["rows are synonymns"]
 
 
 keywords = []
@@ -101,72 +102,100 @@ def load_adgroups():
             except StopIteration:
                 more_lines = False
 
-    ignored_rows = config["ignored first adgroup rows"]
-    ignored_columns = config["ignored first adgroup columns"]
-
-    assert ignored_rows >= 0
-    assert ignored_columns >= 0
-
     adgroups = []
     trace = []
-    logic_trace = []
 
-    y = ignored_rows
+    y = adgroups_ignored_rows
 
-    while y < len(lines):
-        line = lines[y]
+    if adgroups_rows_are_synonyms:
+        while y < len(lines):
+            line = lines[y]
 
-        x = ignored_columns
-        while x < len(line):
-            item = line[x]
+            current = [y, None, []]
 
-            if item:
-                if item != "LOCATION":
-                    item = item.lower()
-                    
-                current = (y, x, item)
+            x = adgroups_ignored_columns
+            while x < len(line):
+                item = line[x]
 
-                trace.append(current)
+                if item:
+                    if current[1] == None:
+                        current[1] = x
 
-                if len(trace) > 1:
-                    if trace[-1][0] == trace[-2][0]:
-                        logic_trace.append(OR)
-                    else:
-                        logic_trace.append(AND)
+                    if item != "LOCATION":
+                        item = item.lower()
+                        
+                    current[2].append(item)
+                
+                x += 1
+            
+            # print(current)
+            
+            if current[2]:
+                while trace and current[1] <= trace[-1][1]:
+                    # print(json.dumps(trace, indent=2))
+                    # input()
 
-                # while trace and current[1] <= trace[-1][1]:
-                # while len(trace) > 1 and trace[-1][0] > trace[-2][0]:
-                while len(trace) > 1:
                     adgroup = []
                     for l in trace:
                         adgroup.append(l[2])
-
                     adgroups.append(adgroup)
+                    trace.pop()
+                    # print(adgroup)
 
-                    print(adgroup)
-                    print(logic_trace)
-                    input()
-                    
-                    if logic_trace[-1] == AND:
-                        trace.pop()
-                        logic_trace.pop()
-                    else:
-                        break
+                trace.append(current)
+
+            y += 1
 
             
-            x += 1
-        y += 1
 
-    while trace:
-        adgroup = []
-        for l in trace:
-            adgroup.append(l[2])
-        adgroups.append(adgroup)
-        trace.pop()
-    
-    for i, a in enumerate(adgroups):
-        print(a)
-        input()
+            # print(trace)
+            # print(current)
+
+            # print(y)
+            # print(json.dumps(adgroups, indent=2))
+            # input()
+            # for i in range(10):
+            #     print()
+
+        while trace:
+            adgroup = []
+            for l in trace:
+                adgroup.append(l[2])
+            adgroups.append(adgroup)
+            trace.pop()
+
+    else:
+        while y < len(lines):
+            line = lines[y]
+
+            x = adgroups_ignored_columns
+            while x < len(line):
+                item = line[x]
+
+                if item:
+                    if item != "LOCATION":
+                        item = item.lower()
+                        
+                    current = (y, x, item)
+
+                    while trace and current[1] <= trace[-1][1]:
+                        adgroup = []
+                        for l in trace:
+                            adgroup.append(l[2])
+                        adgroups.append(adgroup)
+                        trace.pop()
+
+                    trace.append(current)
+                
+                x += 1
+            y += 1
+
+        while trace:
+            adgroup = []
+            for l in trace:
+                adgroup.append(l[2])
+            adgroups.append(adgroup)
+            trace.pop()
 
 def save_overwrite_keywords():
     print(f"Overwriting '{searches_file}'")
@@ -507,11 +536,9 @@ def filter_and_save_by_adgroups():
     output_rows = []
     unused_adgroups = []
 
-    for a in adgroups:
-        if len(a) < 2:
+    for adgroup in adgroups:
+        if len(adgroup) < 2:
             continue
-
-        adgroup = a
 
         # skip = False
         # for term in adgroup:

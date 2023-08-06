@@ -1,15 +1,17 @@
 {
     "locations_file": "locations.json",
     "searches_file": "keywords.csv",
+
     "adgroups_file": "adgroups.csv",
     "output_file": "output.csv",
     "top_remaining_words_file": "top_remaining_words.csv",
 
     "filter using adgroups": true,
+    "rows are synonymns": true,
+    "number of saved remaining words": 1000,
+
     "replace with LOCATION": false,
 
     "ignored first adgroup rows": 291,
-    "ignored first adgroup columns": 1,
-
-    "number of saved remaining words": 1000
+    "ignored first adgroup columns": 1
 }
