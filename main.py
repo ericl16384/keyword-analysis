@@ -8,19 +8,25 @@ config_file = "config.json"
 def load_config():
     global config
     global locations_file, searches_file, adgroups_file, output_file
-    global adgroups_ignored_rows, adgroups_ignored_columns, adgroups_rows_are_synonyms
+    global use_adgroups, adgroups_ignored_rows, adgroups_ignored_columns, adgroups_rows_are_synonyms
+
+    global AND_symbol, OR_symbol
 
     with open(config_file, "r") as f:
         config = json.loads(f.read())
 
-        locations_file = config["locations_file"]
-        searches_file = config["searches_file"]
-        adgroups_file = config["adgroups_file"]
-        output_file = config["output_file"]
+    locations_file = config["locations_file"]
+    searches_file = config["searches_file"]
+    adgroups_file = config["adgroups_file"]
+    output_file = config["output_file"]
 
-        adgroups_ignored_rows = config["ignored first adgroup rows"]
-        adgroups_ignored_columns = config["ignored first adgroup columns"]
-        adgroups_rows_are_synonyms = config["rows are synonymns"]
+    use_adgroups= config["filter using adgroups"]
+    adgroups_ignored_rows = config["ignored first adgroup rows"]
+    adgroups_ignored_columns = config["ignored first adgroup columns"]
+    adgroups_rows_are_synonyms = config["rows are synonymns"]
+
+    AND_symbol = config["AND symbol"]
+    OR_symbol = config["OR symbol"]
 
 
 keywords = []
@@ -196,6 +202,8 @@ def load_adgroups():
                 adgroup.append(l[2])
             adgroups.append(adgroup)
             trace.pop()
+    
+    # print(adgroups)
 
 def save_overwrite_keywords():
     print(f"Overwriting '{searches_file}'")
@@ -209,7 +217,7 @@ def save_overwrite_keywords():
         writer.writerows(phrase_counts)
 
 
-def filter_by_keywords():
+def filter_by_keywords(treat_as_AND=True):
     if len(keywords) == 0:
         return
 
@@ -222,17 +230,29 @@ def filter_by_keywords():
     # blocked_phrases = 0
     for phrase_count in phrase_counts:
         phrase, count = phrase_count
-        keep = True
+
+        keep = treat_as_AND
+
         for k in keywords:
-            if k[0] == "!":
+            negate = k[0] == "!"
+            if negate:
                 k = k[1:]
-                if k in phrase:
-                    keep = False
-                    break
-            else:
-                if k not in phrase:
-                    keep = False
-                    break
+
+            # if treat_as_AND:
+            #     # user interface (old :])
+            #     if (k not in phrase) ^ negate:
+            #         keep = False
+            #         break
+            
+            # else:
+            #     # OR
+            #     if (k in phrase) ^ negate:
+            #         keep = True
+            #         break
+
+            if (k in phrase) ^ negate ^ treat_as_AND:
+                keep = not treat_as_AND
+                break
 
             # print(phrase, k)
             # if k not in phrase or (k[0] == "!" and k[1:] in phrase):
@@ -299,6 +319,8 @@ def find_display_words():
         display_words.append(max_word)
 
 def add_keyword_from_display_words(rank, negate=False):
+    find_display_words()
+
     rank = int(rank)
     if rank < 1 or rank > len(display_words):
         print(f"Number must be within 1 to {len(display_words)}")
@@ -539,6 +561,9 @@ def filter_and_save_by_adgroups():
     for adgroup in adgroups:
         if len(adgroup) < 2:
             continue
+            
+        print(adgroup)
+        input()
 
         # skip = False
         # for term in adgroup:
@@ -625,12 +650,12 @@ def filter_and_save_by_adgroups():
     output_rows = []
     unused_adgroups = []
 
-    for a in adgroups:
-        if len(a) < 2:
-            continue
+    for adgroup in adgroups:
+        # if len(a) < 2:
+        #     continue
 
-        category = a[0]
-        adgroup = a[1:]
+        # category = a[0]
+        # adgroup = a[1:]
 
         # skip = False
         # for term in adgroup:
@@ -648,17 +673,33 @@ def filter_and_save_by_adgroups():
 
         old_phrases = phrase_counts.copy()
 
-        keywords = adgroup
+        for k in adgroup:
+            keywords = k
+            filter_by_keywords(treat_as_AND=False)
 
-        # print("phrase_counts:", len(phrase_counts))
-        # print(keywords)
-        filter_by_keywords()
-        # print("phrase_counts:", len(phrase_counts))
+        if adgroups_rows_are_synonyms:
+            rows = []
+            for row in adgroup:
+                text = OR_symbol.join(row)
+                if len(row) > 1 and len(adgroup) > 1:
+                    text = f"({text})"
+                rows.append(text)
+            adgroup_text = AND_symbol.join(rows)
+            
+        else:
+            adgroup_text = AND_symbol.join(adgroup)
+        
+        print(adgroup)
+        print(adgroup_text)
+        global display_count
+        display_count = 10
+        show_matches()
+        input()
 
         # save_searches()
         for phrase, count, in phrase_counts:
             output_rows.append((
-                " ".join(adgroup),
+                adgroup_text,
                 phrase,
                 count
             ))
@@ -719,7 +760,7 @@ if __name__ == "__main__":
 
     print()
 
-    if config["filter using adgroups"]:
+    if use_adgroups:
         load_adgroups()
         filter_and_save_by_adgroups()
     else:
