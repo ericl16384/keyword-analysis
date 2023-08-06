@@ -8,7 +8,7 @@
     "filter using adgroups": true,
     "replace with LOCATION": false,
 
-    "ignored first adgroup rows": 293,
+    "ignored first adgroup rows": 291,
     "ignored first adgroup columns": 1,
 
     "number of saved remaining words": 1000

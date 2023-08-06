@@ -126,22 +126,6 @@ def load_adgroups():
                     
                 current = (y, x, item)
 
-                while trace and current[1] <= trace[-1][1]:
-                    adgroup = []
-                    for l in trace:
-                        adgroup.append(l[2])
-
-                    print(adgroup)
-                    print(logic_trace)
-                    input()
-
-                    adgroups.append(adgroup)
-                    
-                    if logic_trace[-1] == AND:
-                        trace.pop()
-                    else:
-                        break
-
                 trace.append(current)
 
                 if len(trace) > 1:
@@ -149,6 +133,25 @@ def load_adgroups():
                         logic_trace.append(OR)
                     else:
                         logic_trace.append(AND)
+
+                # while trace and current[1] <= trace[-1][1]:
+                # while len(trace) > 1 and trace[-1][0] > trace[-2][0]:
+                while len(trace) > 1:
+                    adgroup = []
+                    for l in trace:
+                        adgroup.append(l[2])
+
+                    adgroups.append(adgroup)
+
+                    print(adgroup)
+                    print(logic_trace)
+                    input()
+                    
+                    if logic_trace[-1] == AND:
+                        trace.pop()
+                        logic_trace.pop()
+                    else:
+                        break
 
             
             x += 1
