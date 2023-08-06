@@ -592,6 +592,98 @@ def filter_and_save_by_adgroups():
 
     print("Done saving")
 
+def filter_and_save_by_adgroups():
+    global phrase_counts, keywords
+
+    output_rows = []
+    unused_adgroups = []
+
+    for a in adgroups:
+        if len(a) < 2:
+            continue
+
+        category = a[0]
+        adgroup = a[1:]
+
+        # skip = False
+        # for term in adgroup:
+        #     if " " in term:
+        #         print(f"WARNING: text-match not yet implemented. Skipping '{adgroup}'.")
+        #         skip = True
+        #         break
+        # if skip:
+        #     continue
+
+        # TODO word-match
+
+        # print()
+
+
+        old_phrases = phrase_counts.copy()
+
+        keywords = adgroup
+
+        # print("phrase_counts:", len(phrase_counts))
+        # print(keywords)
+        filter_by_keywords()
+        # print("phrase_counts:", len(phrase_counts))
+
+        # save_searches()
+        for phrase, count, in phrase_counts:
+            output_rows.append((
+                " ".join(adgroup),
+                phrase,
+                count
+            ))
+
+        unused_phrases = []
+        i = 0
+
+        for phrase in old_phrases:
+            if i >= len(phrase_counts) or phrase != phrase_counts[i]:
+                unused_phrases.append(phrase)
+            else:
+                i += 1
+
+        print(f"Adgroup: {adgroup}")
+        print(f"Searches: {len(phrase_counts)}")
+        print(f"Remaining: {len(unused_phrases)}")
+        print()
+        if not phrase_counts:
+            unused_adgroups.append(adgroup)
+        
+        phrase_counts = unused_phrases
+
+        # input()
+    
+    print("Storing remaining phrases")
+    adgroup = ["REMAINING_PHRASES"]
+    for phrase, count, in phrase_counts:
+        output_rows.append((
+            " ".join(adgroup),
+            phrase,
+            count
+        ))
+    
+    print(f"Saving adgroups to {output_file}")
+    with open(output_file, "w", newline="") as f:
+        writer = csv.writer(f)
+        writer.writerow(("Adgroup", "Phrase", "Count"))
+        writer.writerows(output_rows)
+
+    if len(unused_adgroups):
+        print()
+        print("The following adgroups did not result in any matches. Please check their ordering and spelling.")
+        for w in unused_adgroups:
+            print(f"  {w}")
+
+    print()
+    
+    count_words()
+    save_top_words()
+
+    print("Done saving")
+
 
 
 
