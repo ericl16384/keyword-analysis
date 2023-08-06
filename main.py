@@ -691,9 +691,8 @@ def filter_and_save_by_adgroups():
         
         print(adgroup)
         print(adgroup_text)
-        global display_count
-        display_count = 10
-        show_matches()
+        for x in phrase_counts[:30]:
+            print(x)
         input()
 
         # save_searches()
