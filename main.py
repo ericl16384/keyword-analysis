@@ -244,45 +244,34 @@ def filter_by_keywords(treat_as_AND=True):
         keep = treat_as_AND
 
         for k in keywords:
-            negate = k[0] == "!"
+            negate = k[0] == config["NOT symbol"]
             if negate:
                 k = k[1:]
 
-            # if treat_as_AND:
-            #     # user interface (old :])
-            #     if (k not in phrase) ^ negate:
-            #         keep = False
-            #         break
-            
-            # else:
-            #     # OR
-            #     if (k in phrase) ^ negate:
-            #         keep = True
-            #         break
+            must_be_start = k[0] == config["word match symbol"]
+            if must_be_start:
+                k = k[1:]
+
+                # https://www.geeksforgeeks.org/python-string-find/#
+                start = 0
+                found = False
+                while not found
+                    j = phrase.find(k, start_index)
+                    if(j!=-1):
+                        start_index = j+1
+                        count_er=1
+
+            must_be_end = k[-1] == config["word match symbol"]
+            if must_be_end:
+                k = k[:-1]
 
             if (k in phrase) ^ negate ^ treat_as_AND:
                 keep = not treat_as_AND
                 break
-
-            # print(phrase, k)
-            # if k not in phrase or (k[0] == "!" and k[1:] in phrase):
-            #     if k[0] == "!" and k[1:] in phrase:
-            #         print(k[1:])
-            #     keep = False
-            #     break
-            # if k in phrase:
-            #     keep = True
-            #     print(f"{k} in '{phrase}'")
         if keep:
             new_phrases.append(phrase_count)
-            # print(f"Keeping '{phrase}'")
-            # print(phrase)
-    # print(new_phrases)
+            
     phrase_counts = new_phrases
-
-    # print(phrase_counts)
-    # assert False
-    # input()
 
 def count_words():
     global word_counts, total_hits
@@ -338,7 +327,7 @@ def add_keyword_from_display_words(rank, negate=False):
         index = rank - 1
         keyword = display_words[index]
         if negate:
-            keyword = "!" + keyword
+            keyword = config["NOT symbol"] + keyword
         # print(keywords)
         keywords.append(keyword)
         # print(keywords)

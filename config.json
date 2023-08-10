@@ -19,5 +19,7 @@
     "AND symbol": "&&",
     "OR symbol": "||",
     "open parentheses symbol": "(",
-    "close parentheses symbol": ")"
+    "close parentheses symbol": ")",
+    
+    "word match symbol": "#"
 }
