@@ -15,6 +15,9 @@
     "ignored first adgroup rows": 0,
     "ignored first adgroup columns": 1,
 
+    "NOT symbol": "!",
     "AND symbol": "&&",
-    "OR symbol": "||"
+    "OR symbol": "||",
+    "open parentheses symbol": "(",
+    "close parentheses symbol": ")"
 }

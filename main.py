@@ -10,7 +10,7 @@ def load_config():
     global locations_file, searches_file, adgroups_file, output_file
     global use_adgroups, adgroups_ignored_rows, adgroups_ignored_columns, adgroups_rows_are_synonyms
 
-    global AND_symbol, OR_symbol
+    # global AND_symbol, OR_symbol
 
     with open(config_file, "r") as f:
         config = json.loads(f.read())
@@ -25,8 +25,8 @@ def load_config():
     adgroups_ignored_columns = config["ignored first adgroup columns"]
     adgroups_rows_are_synonyms = config["rows are synonymns"]
 
-    AND_symbol = config["AND symbol"]
-    OR_symbol = config["OR symbol"]
+    # AND_symbol = config["AND symbol"]
+    # OR_symbol = config["OR symbol"]
 
 
 keywords = []
@@ -356,14 +356,14 @@ def adgroup_to_string(adgroup):
     if adgroups_rows_are_synonyms:
         rows = []
         for row in adgroup:
-            text = OR_symbol.join(row)
+            text = config["OR symbol"].join(row)
             if len(row) > 1 and len(adgroup) > 1:
-                text = f"({text})"
+                text = config["open parentheses symbol"] + text + config["close parentheses symbol"]
             rows.append(text)
-        adgroup_text = AND_symbol.join(rows)
+        adgroup_text = config["AND symbol"].join(rows)
         
     else:
-        adgroup_text = AND_symbol.join(adgroup)
+        adgroup_text = config["AND symbol"].join(adgroup)
     
     return adgroup_text
 
