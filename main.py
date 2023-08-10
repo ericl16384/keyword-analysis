@@ -187,7 +187,7 @@ def load_adgroups():
                     while trace and current[1] <= trace[-1][1]:
                         adgroup = []
                         for l in trace:
-                            adgroup.append(l[2])
+                            adgroup.append([l[2]])
                         adgroups.append(adgroup)
                         trace.pop()
 
@@ -202,6 +202,11 @@ def load_adgroups():
                 adgroup.append(l[2])
             adgroups.append(adgroup)
             trace.pop()
+    
+    # for adgroup in adgroups:
+    #     print(adgroup)
+    #     input()
+        # if adgroups
     
     # print(adgroups)
 
@@ -353,17 +358,19 @@ def replace_locations():
                     words = phrase_counts[i][0].split()
 
 def adgroup_to_string(adgroup):
-    if adgroups_rows_are_synonyms:
-        rows = []
-        for row in adgroup:
-            text = config["OR symbol"].join(row)
-            if len(row) > 1 and len(adgroup) > 1:
-                text = config["open parentheses symbol"] + text + config["close parentheses symbol"]
-            rows.append(text)
-        adgroup_text = config["AND symbol"].join(rows)
+    rows = []
+    for row in adgroup:
+        text = config["OR symbol"].join(row)
+        if len(row) > 1 and len(adgroup) > 1:
+            text = config["open parentheses symbol"] + text + config["close parentheses symbol"]
+        rows.append(text)
+        # print(row)
+        # print(text)
+        # input()
+    adgroup_text = config["AND symbol"].join(rows)
         
-    else:
-        adgroup_text = config["AND symbol"].join(adgroup)
+    # else:
+    #     adgroup_text = config["AND symbol"].join(adgroup)
     
     return adgroup_text
 
