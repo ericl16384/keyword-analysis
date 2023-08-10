@@ -252,14 +252,14 @@ def filter_by_keywords(treat_as_AND=True):
             if must_be_start:
                 k = k[1:]
 
-                # https://www.geeksforgeeks.org/python-string-find/#
-                start = 0
-                found = False
-                while not found
-                    j = phrase.find(k, start_index)
-                    if(j!=-1):
-                        start_index = j+1
-                        count_er=1
+                # # https://www.geeksforgeeks.org/python-string-find/#
+                # start = 0
+                # found = False
+                # while not found
+                #     j = phrase.find(k, start_index)
+                #     if(j!=-1):
+                #         start_index = j+1
+                #         count_er=1
 
             must_be_end = k[-1] == config["word match symbol"]
             if must_be_end:
