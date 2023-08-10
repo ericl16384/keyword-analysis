@@ -7,7 +7,7 @@
     "top_remaining_words_file": "top_remaining_words.csv",
 
     "filter using adgroups": true,
-    "rows are synonymns": false,
+    "rows are synonymns": true,
     "number of saved remaining words": 1000,
 
     "replace with LOCATION": false,

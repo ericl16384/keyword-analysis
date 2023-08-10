@@ -203,11 +203,16 @@ def load_adgroups():
             adgroups.append(adgroup)
             trace.pop()
     
-    # for adgroup in adgroups:
-    #     print(adgroup)
-    #     input()
-        # if adgroups
-    
+    for adgroup in adgroups:
+        # print(adgroup)
+        # input()
+        for synonyms in adgroup:
+            for phrase in synonyms:
+                # print(phrase)
+                if phrase.startswith(" "):
+                    print(f"SUGGESTION: Replace space at start or end of adgroup member '{phrase}' in '{adgroup_to_string(adgroup)}' with # to signify the phrase must be at the start and/or end of a word.")
+                    # input()
+
     # print(adgroups)
 
 def save_overwrite_keywords():
