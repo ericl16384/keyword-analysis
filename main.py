@@ -265,7 +265,8 @@ def filter_by_keywords(treat_as_AND=True):
             if must_be_end:
                 k = k[:-1]
 
-            if (k in phrase) ^ negate ^ treat_as_AND:
+            # if (k in phrase) ^ negate ^ treat_as_AND:
+            if (phrase.find(k) != -1) ^ negate ^ treat_as_AND:
                 keep = not treat_as_AND
                 break
         if keep:
