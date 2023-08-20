@@ -229,34 +229,48 @@ def save_overwrite_keywords():
 
 def process_keyword_flags(keyword):
     flags = {
-        "keyword": keyword,
         "not": False,
         "start": False,
         "end": False
     }
 
-    while flags["keyword"]:
-        if flags["keyword"][0] == config["NOT symbol"]:
+    while keyword:
+        if keyword[0] == config["NOT symbol"]:
             flags["not"] = True
-        elif flags["keyword"][0] == config["word match symbol"]:
+        elif keyword[0] == config["word match symbol"]:
             flags["start"] = True
         else:
             break
-        print(flags["keyword"])
-        flags["keyword"] = flags["keyword"][1:]
-        print(flags["keyword"])
-        input()
+        keyword = keyword[1:]
 
-    while flags["keyword"]:
-        if flags["keyword"][-1] == config["word match symbol"]:
+    while keyword:
+        if keyword[-1] == config["word match symbol"]:
             flags["end"] = True
         else:
             break
-        flags["keyword"] = flags["keyword"][:-1]
+        keyword = keyword[:-1]
+    
+    flags["keyword"] = keyword
     
     return flags
 
-# def does_phrase_match_keyword(phrase, keyword):
+def find_in_phrase_by_flags(phrase, flags):
+    phrase = " " + phrase + " "
+
+    i = 0
+    while True:
+        i = phrase.find(flags["keyword"], i+1)
+        
+        if i == -1:
+            return False
+        
+        if flags["start"] and not phrase[i-1] == " ":
+            continue
+        
+        if flags["end"] and not phrase[i+len(phrase)] == " ":
+            continue
+
+        return True
 
 def filter_by_keywords(treat_as_AND=True):
     if len(keywords) == 0:
@@ -274,34 +288,15 @@ def filter_by_keywords(treat_as_AND=True):
 
         keep = treat_as_AND
 
-        for k in keywords:
-            # negate = k[0] == config["NOT symbol"]
-            # if negate:
-            #     k = k[1:]
+        for keyword in keywords:
+            flags = process_keyword_flags(keyword)
 
-            # must_be_start = k[0] == config["word match symbol"]
-            # if must_be_start:
-            #     k = k[1:]
+            negate = flags["not"] ^ treat_as_AND
 
-            #     # # https://www.geeksforgeeks.org/python-string-find/#
-            #     # start = 0
-            #     # found = False
-            #     # while not found
-            #     #     j = phrase.find(k, start_index)
-            #     #     if(j!=-1):
-            #     #         start_index = j+1
-            #     #         count_er=1
-
-            # must_be_end = k[-1] == config["word match symbol"]
-            # if must_be_end:
-            #     k = k[:-1]
-
-            flags = process_keyword_flags(k)
-
-            # if (k in phrase) ^ negate ^ treat_as_AND:
-            if (phrase.find(flags["keyword"]) != -1) ^ flags["not"] ^ treat_as_AND:
+            if find_in_phrase_by_flags(phrase, flags) ^ negate:
                 keep = not treat_as_AND
                 break
+
         if keep:
             new_phrases.append(phrase_count)
             
