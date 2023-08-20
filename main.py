@@ -227,6 +227,37 @@ def save_overwrite_keywords():
         writer.writerows(phrase_counts)
 
 
+def process_keyword_flags(keyword):
+    flags = {
+        "keyword": keyword,
+        "not": False,
+        "start": False,
+        "end": False
+    }
+
+    while flags["keyword"]:
+        if flags["keyword"][0] == config["NOT symbol"]:
+            flags["not"] = True
+        elif flags["keyword"][0] == config["word match symbol"]:
+            flags["start"] = True
+        else:
+            break
+        print(flags["keyword"])
+        flags["keyword"] = flags["keyword"][1:]
+        print(flags["keyword"])
+        input()
+
+    while flags["keyword"]:
+        if flags["keyword"][-1] == config["word match symbol"]:
+            flags["end"] = True
+        else:
+            break
+        flags["keyword"] = flags["keyword"][:-1]
+    
+    return flags
+
+# def does_phrase_match_keyword(phrase, keyword):
+
 def filter_by_keywords(treat_as_AND=True):
     if len(keywords) == 0:
         return
@@ -244,29 +275,31 @@ def filter_by_keywords(treat_as_AND=True):
         keep = treat_as_AND
 
         for k in keywords:
-            negate = k[0] == config["NOT symbol"]
-            if negate:
-                k = k[1:]
+            # negate = k[0] == config["NOT symbol"]
+            # if negate:
+            #     k = k[1:]
 
-            must_be_start = k[0] == config["word match symbol"]
-            if must_be_start:
-                k = k[1:]
+            # must_be_start = k[0] == config["word match symbol"]
+            # if must_be_start:
+            #     k = k[1:]
 
-                # # https://www.geeksforgeeks.org/python-string-find/#
-                # start = 0
-                # found = False
-                # while not found
-                #     j = phrase.find(k, start_index)
-                #     if(j!=-1):
-                #         start_index = j+1
-                #         count_er=1
+            #     # # https://www.geeksforgeeks.org/python-string-find/#
+            #     # start = 0
+            #     # found = False
+            #     # while not found
+            #     #     j = phrase.find(k, start_index)
+            #     #     if(j!=-1):
+            #     #         start_index = j+1
+            #     #         count_er=1
 
-            must_be_end = k[-1] == config["word match symbol"]
-            if must_be_end:
-                k = k[:-1]
+            # must_be_end = k[-1] == config["word match symbol"]
+            # if must_be_end:
+            #     k = k[:-1]
+
+            flags = process_keyword_flags(k)
 
             # if (k in phrase) ^ negate ^ treat_as_AND:
-            if (phrase.find(k) != -1) ^ negate ^ treat_as_AND:
+            if (phrase.find(flags["keyword"]) != -1) ^ flags["not"] ^ treat_as_AND:
                 keep = not treat_as_AND
                 break
         if keep:
