@@ -257,20 +257,13 @@ def process_keyword_flags(keyword):
 def find_in_phrase_by_flags(phrase, flags):
     phrase = " " + phrase + " "
 
-    i = 0
-    while True:
-        i = phrase.find(flags["keyword"], i+1)
-        
-        if i == -1:
-            return False
-        
-        if flags["start"] and not phrase[i-1] == " ":
-            continue
-        
-        if flags["end"] and not phrase[i+len(phrase)] == " ":
-            continue
+    keyword = flags["keyword"]
+    if flags["start"]:
+        keyword = " " + keyword
+    if flags["end"]:
+        keyword = keyword + " "
 
-        return True
+    return phrase.find(keyword) != -1
 
 def filter_by_keywords(treat_as_AND=True):
     if len(keywords) == 0:
