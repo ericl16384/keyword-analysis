@@ -227,6 +227,30 @@ def save_overwrite_keywords():
         writer.writerows(phrase_counts)
 
 
+class KeywordData:
+    def __init__(self, keyword) -> None:
+        self.not_ = False
+        self.start = False
+        self.end = False
+
+        while keyword:
+            if keyword[0] == config["NOT symbol"]:
+                self.not_ = True
+            elif keyword[0] == config["word match symbol"]:
+                self.start = True
+            else:
+                break
+            keyword = keyword[1:]
+
+        while keyword:
+            if keyword[-1] == config["word match symbol"]:
+                self.end = True
+            else:
+                break
+            keyword = keyword[:-1]
+        
+        self.keyword = keyword
+
 def process_keyword_flags(keyword):
     flags = {
         "not": False,
