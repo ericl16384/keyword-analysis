@@ -13,7 +13,7 @@
     "replace with LOCATION": false,
 
     "ignored first adgroup rows": 0,
-    "ignored first adgroup columns": 1,
+    "ignored first adgroup columns": 4,
 
     "NOT symbol": "!",
     "AND symbol": "&&",
