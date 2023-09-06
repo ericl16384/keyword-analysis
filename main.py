@@ -18,7 +18,7 @@ def load_config():
     locations_file = config["locations_file"]
     searches_file = config["searches_file"]
     adgroups_file = config["adgroups_file"]
-    output_file = config["output_file"]
+    # output_file = config["output_file"]
 
     use_adgroups= config["filter using adgroups"]
     adgroups_ignored_rows = config["ignored first adgroup rows"]
@@ -577,6 +577,7 @@ def save_top_words():
     number = config["number of saved remaining words"]
 
     print(f"Finding top {number} words")
+    print()
 
     top_words_set = set()
     top_word_counts = []
@@ -710,8 +711,10 @@ def save_top_words():
 def filter_and_save_by_adgroups():
     global phrase_counts, keywords
 
-    output_rows = []
     unused_adgroups = []
+
+    adgroup_output_rows = []
+    adgroup_statistics_output_rows = []
 
     for adgroup in adgroups:
         # if len(a) < 2:
@@ -749,12 +752,27 @@ def filter_and_save_by_adgroups():
         # input()
 
         # save_searches()
+
+
+        unique_counts = 0
+        aggregrate_counts = 0
+
         for phrase, count, in phrase_counts:
-            output_rows.append((
+            adgroup_output_rows.append((
                 adgroup_text,
                 phrase,
                 count
             ))
+
+            unique_counts += 1
+            aggregrate_counts += count
+
+        adgroup_statistics_output_rows.append((
+            adgroup_text,
+            unique_counts,
+            aggregrate_counts
+        ))
+
 
         unused_phrases = []
         i = 0
@@ -774,20 +792,14 @@ def filter_and_save_by_adgroups():
 
         # input()
     
-    print("Storing remaining phrases")
+    print(f"REMAINING_PHRASES    {len(unused_phrases)}")
     adgroup = ["REMAINING_PHRASES"]
     for phrase, count, in phrase_counts:
-        output_rows.append((
+        adgroup_output_rows.append((
             " ".join(adgroup),
             phrase,
             count
         ))
-    
-    print(f"Saving adgroups to {output_file}")
-    with open(output_file, "w", newline="") as f:
-        writer = csv.writer(f)
-        writer.writerow(("Adgroup", "Phrase", "Count"))
-        writer.writerows(output_rows)
 
     if len(unused_adgroups):
         print()
@@ -796,15 +808,30 @@ def filter_and_save_by_adgroups():
             print(f"  {adgroup_to_string(w)}")
     
     print()
-    print(f"{len(unused_phrases)} phrases were not categorized.")
+    
+    fn = config["output_file"]
+    print(f"Saving adgroups to {fn}")
+    with open(fn, "w", newline="") as f:
+        writer = csv.writer(f)
+        writer.writerow(("Adgroup", "Phrase", "Count"))
+        writer.writerows(adgroup_output_rows)
+
+    fn = config["adgroup_statistics_file"]
+    print(f"Saving adgroup statistics to {fn}")
+    with open(fn, "w", newline="") as f:
+        writer = csv.writer(f)
+        writer.writerow(("Adgroup", "Unique Phrases", "Aggregrate Matches"))
+        writer.writerows(adgroup_statistics_output_rows)
+    
+    # print()
+    # print(f"{len(unused_phrases)} phrases were not categorized.")
 
     print()
     
     count_words()
     save_top_words()
 
-    print("Done saving")
-
+    # print("Done saving")
 
 
 

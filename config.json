@@ -5,6 +5,7 @@
     "adgroups_file": "adgroups.csv",
     "output_file": "output.csv",
     "top_remaining_words_file": "top_remaining_words.csv",
+    "adgroup_statistics_file": "adgroup_statistics.csv",
 
     "filter using adgroups": true,
     "rows are synonymns": true,
