@@ -792,14 +792,24 @@ def filter_and_save_by_adgroups():
 
         # input()
     
-    print(f"REMAINING_PHRASES    {len(unused_phrases)}")
-    adgroup = ["REMAINING_PHRASES"]
+    adgroup_text = "REMAINING_PHRASES"
+    print(f"{adgroup_text}    {len(unused_phrases)}")
+    unique_counts = 0
+    aggregrate_counts = 0
+    adgroup = [adgroup_text]
     for phrase, count, in phrase_counts:
         adgroup_output_rows.append((
             " ".join(adgroup),
             phrase,
             count
         ))
+        unique_counts += 1
+        aggregrate_counts += count
+    adgroup_statistics_output_rows.append((
+        adgroup_text,
+        unique_counts,
+        aggregrate_counts
+    ))
 
     if len(unused_adgroups):
         print()
