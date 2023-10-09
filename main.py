@@ -53,10 +53,10 @@ def load_searches():
 
         # header = reader.__next__()
         header_raw = file.readline().strip()
-        assert header_raw in (
-            "Keyword,Frequency",
-            "Keyword,Traffic,Exact KW,abortion,clinic,near,Campaign,Ad Group,Group"
-        )
+        # assert header_raw in (
+        #     "Keyword,Frequency",
+        #     "Keyword,Traffic,Exact KW,abortion,clinic,near,Campaign,Ad Group,Group"
+        # )
 
         i = 0
         while not whole_file_read:
